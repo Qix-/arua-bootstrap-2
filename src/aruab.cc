@@ -18,6 +18,11 @@ int protected_main(int argc, const char *argv[]) {
 	}
 
 	for (string &filename : cfg.files) {
+		if (filename.substr(filename.length() - 3) != ".aa") {
+			cerr << "WARNING: cowardly refusing to compile file without .aa extension: " << filename << endl;
+			continue;
+		}
+
 		cerr << "aruab: " << filename << endl;
 		// TODO do something with output
 		parse_file(filename);
