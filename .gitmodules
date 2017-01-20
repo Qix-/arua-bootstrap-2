@@ -1,3 +1,7 @@
 [submodule "ext/xopt"]
 	path = ext/xopt
 	url = git@github.com:Qix-/xopt.git
+[submodule "ext/re2c"]
+	path = ext/re2c
+	url = git@github.com:skvadrik/re2c.git
+	ignore = all
