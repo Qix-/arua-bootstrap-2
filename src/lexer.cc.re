@@ -19,7 +19,14 @@ enum arua_abt {
 	ABT_ID,
 	ABT_FN,
 	ABT_RET,
+	ABT_NUM,
 	ABT_NUM_EXTENDED,
+	ABT_DOT,
+	ABT_USE,
+	ABT_STR_BEGIN,
+	ABT_STR_END,
+	ABT_STR_LITERAL,
+	ABT_STR_ESCAPE,
 };
 
 struct token {
@@ -111,6 +118,32 @@ struct input {
 	}
 };
 
+void lex_string(input &in) {
+	in.push(ABT_STR_BEGIN);
+	for (;;) {
+		in.tok = in.cur;
+/*!re2c
+		re2c:define:YYCURSOR = in.cur;
+		re2c:define:YYMARKER = in.mar;
+		re2c:define:YYLIMIT = in.lim;
+		re2c:yyfill:enable = 1;
+		re2c:define:YYFILL = "if (!in.fill(@@)) return;";
+		re2c:define:YYFILL:naked = 1;
+
+		* { return; } // TODO error message
+		["] { break; }
+
+		[^\r\n\\"]+ { in.push(ABT_STR_LITERAL, in); continue; }
+
+		"\\"[\\"nrftavb] { in.push(ABT_STR_ESCAPE, in); continue; }
+		"\\x"[^"]{0,2} { in.push(ABT_STR_ESCAPE, in); continue; }
+		"\\u"[^"]{0,4} { in.push(ABT_STR_ESCAPE, in); continue; }
+		"\\U"[^"]{0,8} { in.push(ABT_STR_ESCAPE, in); continue; }
+*/
+	}
+	in.push(ABT_STR_END);
+}
+
 void lex_input(input &in) {
 	for (;;) {
 		in.tok = in.cur;
@@ -130,13 +163,19 @@ void lex_input(input &in) {
 		extended_form = ("0" | [1-9][0-9]*) "x" [a-zA-Z0-9]+;
 		extended_form { in.push(ABT_NUM_EXTENDED, in); continue; }
 
+		["] { lex_string(in); continue; }
+
+		([0-9]+ "." [0-9]+) | ("." [0-9]+) | ([0-9]+ "."?) { in.push(ABT_NUM, in); continue; }
+
 		"fn" { in.push(ABT_FN); continue; }
 		"ret" { in.push(ABT_RET); continue; }
+		"use" { in.push(ABT_USE); continue; }
 
 		"(" { in.push(ABT_OPAREN); continue; }
 		")" { in.push(ABT_CPAREN); continue; }
 		"[" { in.push(ABT_OBRACKET); continue; }
 		"]" { in.push(ABT_CBRACKET); continue; }
+		"." { in.push(ABT_DOT); continue; }
 
 		id = [a-zA-Z_][a-zA-Z_0-9]*;
 		id { in.push(ABT_ID, in); continue; }
@@ -150,16 +189,25 @@ void print_highlighted(input &in) {
 		case ABT_WS: cerr << " "; continue;
 		case ABT_TAB: cerr << "\t"; continue;
 		case ABT_NL: cerr << "\n"; continue;
-		case ABT_FN: cerr << "\x1b[36;1mfn \x1b[m"; continue;
+		case ABT_FN: cerr << "\x1b[36;1mfn\x1b[m"; continue;
 		case ABT_ID: cerr << ((token_val *)tkn.get())->val; continue;
 		case ABT_OPAREN: cerr << "\x1b[2m(\x1b[m"; continue;
 		case ABT_CPAREN: cerr << "\x1b[2m)\x1b[m"; continue;
 		case ABT_OBRACKET: cerr << "\x1b[2m[\x1b[m"; continue;
 		case ABT_CBRACKET: cerr << "\x1b[2m]\x1b[m"; continue;
 		case ABT_RET: cerr << "\x1b[36;1mret\x1b[m"; continue;
+		case ABT_NUM:
 		case ABT_NUM_EXTENDED: cerr << "\x1b[31m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
+		case ABT_DOT: cerr << "."; continue;
+		case ABT_USE: cerr << "\x1b[36;1muse\x1b[m"; continue;
+		case ABT_STR_BEGIN: cerr << "\x1b[38;5;208m\""; continue;
+		case ABT_STR_END: cerr << "\"\x1b[m"; continue;
+		case ABT_STR_LITERAL: cerr << ((token_val *)tkn.get())->val; continue;
+		case ABT_STR_ESCAPE: cerr << "\x1b[38;5;214;1m" << ((token_val *)tkn.get())->val << "\x1b[38;5;208m"; continue;
 		}
 	}
+
+	cerr << "\x1b[m";
 }
 
 // TODO change void to an AST tree result.

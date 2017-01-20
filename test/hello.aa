@@ -1,2 +1,5 @@
+use sys.io.out
+
 fn main(args [str]) i32
-	ret 0x0
+	out.write("Hello, world!\n")
+	ret 0
