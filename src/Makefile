@@ -4,7 +4,7 @@ RE2C := ../ext/re2c/re2c/re2c
 
 SRC := \
 	cli.cc \
-	parser.cc.re \
+	lexer.cc.re \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
@@ -13,7 +13,7 @@ OBJS := $(CCSRC:.cc=.o)
 all: aruab
 
 clean:
-	rm parser.cc
+	rm -rf parser.cc
 	rm -rf aruab $(OBJS)
 
 aruab : $(OBJS)

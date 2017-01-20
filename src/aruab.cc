@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include "cli.h"
-#include "parser.h"
+#include "lexer.h"
 
 using namespace arua;
 using namespace std;
@@ -25,7 +25,7 @@ int protected_main(int argc, const char *argv[]) {
 
 		cerr << "aruab: " << filename << endl;
 		// TODO do something with output
-		parse_file(filename);
+		lex_file(filename);
 	}
 
 	return 0;

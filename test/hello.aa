@@ -1,2 +1,2 @@
 fn main(args [str]) i32
-	ret 0
+	ret 0x0
