@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "cli.h"
+#include "parser.h"
 
 using namespace arua;
 using namespace std;
@@ -16,7 +17,11 @@ int protected_main(int argc, const char *argv[]) {
 		throw runtime_error("no files specified");
 	}
 
-	cerr << "aruab: compiling " << cfg.files.size() << " file(s)" << endl;
+	for (string &filename : cfg.files) {
+		cerr << "aruab: " << filename << endl;
+		// TODO do something with output
+		parse_file(filename);
+	}
 
 	return 0;
 }
