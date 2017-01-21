@@ -3,6 +3,6 @@ use sys.io.out as console
 fn add(a i32, b i32) i32
 	ret (a + b) * 0x2
 
-fn main(args [str]) i32
+pub fn main(args [str]) i32
 	console.write("Hello, world!\n{0} arguments were specified.\n", args.length)
 	ret 0

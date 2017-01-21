@@ -33,6 +33,7 @@ enum arua_abt {
 	ABT_MINUS,
 	ABT_DIVIDE,
 	ABT_MULTIPLY,
+	ABT_PUB,
 };
 
 struct token {
@@ -177,6 +178,7 @@ void lex_input(input &in) {
 		"ret" { in.push(ABT_RET); continue; }
 		"use" { in.push(ABT_USE); continue; }
 		"as" { in.push(ABT_AS); continue; }
+		"pub" { in.push(ABT_PUB); continue; }
 
 		"(" { in.push(ABT_OPAREN); continue; }
 		")" { in.push(ABT_CPAREN); continue; }
@@ -217,6 +219,7 @@ void print_highlighted(input &in) {
 		case ABT_STR_LITERAL: cerr << ((token_val *)tkn.get())->val; continue;
 		case ABT_STR_ESCAPE: cerr << "\x1b[38;5;214;1m" << ((token_val *)tkn.get())->val << "\x1b[38;5;208m"; continue;
 		case ABT_AS: cerr << "\x1b[36;1mas\x1b[m"; continue;
+		case ABT_PUB: cerr << "\x1b[36;1mpub\x1b[m"; continue;
 		case ABT_COMMA: cerr << "\x1b[2m,\x1b[m"; continue;
 		case ABT_PLUS: cerr << "\x1b[2m+\x1b[m"; continue;
 		case ABT_MINUS: cerr << "\x1b[2m-\x1b[m"; continue;
