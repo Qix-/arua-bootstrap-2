@@ -24,3 +24,8 @@ pub fn main(args [str]) i32
 
 	# nothing can really go wrong, here.
 	ret add(1, -1)
+
+pub struct Foo
+	bar i32 = 10
+	qux f64 = 89.99
+	qix str = "Hello, world!"

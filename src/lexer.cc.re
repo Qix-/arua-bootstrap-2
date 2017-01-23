@@ -37,6 +37,8 @@ enum arua_abt {
 	ABT_COMMENT,
 	ABT_COMMENT_DOC,
 	ABT_COMMENT_HEADER,
+	ABT_STRUCT,
+	ABT_EQUALS,
 };
 
 struct token {
@@ -187,6 +189,7 @@ void lex_input(input &in) {
 		"use" { in.push(ABT_USE); continue; }
 		"as" { in.push(ABT_AS); continue; }
 		"pub" { in.push(ABT_PUB); continue; }
+		"struct" { in.push(ABT_STRUCT); continue; }
 
 		"(" { in.push(ABT_OPAREN); continue; }
 		")" { in.push(ABT_CPAREN); continue; }
@@ -198,6 +201,7 @@ void lex_input(input &in) {
 		"-" { in.push(ABT_MINUS); continue; }
 		"/" { in.push(ABT_DIVIDE); continue; }
 		"*" { in.push(ABT_MULTIPLY); continue; }
+		"=" { in.push(ABT_EQUALS); continue; }
 
 		id = [a-zA-Z_][a-zA-Z_0-9]*;
 		id { in.push(ABT_ID, in); continue; }
@@ -228,11 +232,13 @@ void print_highlighted(input &in) {
 		case ABT_STR_ESCAPE: cerr << "\x1b[38;5;214;1m" << ((token_val *)tkn.get())->val << "\x1b[38;5;208m"; continue;
 		case ABT_AS: cerr << "\x1b[36;1mas\x1b[m"; continue;
 		case ABT_PUB: cerr << "\x1b[36;1mpub\x1b[m"; continue;
+		case ABT_STRUCT: cerr << "\x1b[36;1mstruct\x1b[m"; continue;
 		case ABT_COMMA: cerr << "\x1b[2m,\x1b[m"; continue;
 		case ABT_PLUS: cerr << "\x1b[2m+\x1b[m"; continue;
 		case ABT_MINUS: cerr << "\x1b[2m-\x1b[m"; continue;
 		case ABT_DIVIDE: cerr << "\x1b[2m/\x1b[m"; continue;
 		case ABT_MULTIPLY: cerr << "\x1b[2m*\x1b[m"; continue;
+		case ABT_EQUALS: cerr << "\x1b[2m=\x1b[m"; continue;
 		case ABT_COMMENT: cerr << "\x1b[38;5;242;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
 		case ABT_COMMENT_DOC: cerr << "\x1b[38;5;61;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
 		case ABT_COMMENT_HEADER: cerr << "\x1b[38;5;50;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
