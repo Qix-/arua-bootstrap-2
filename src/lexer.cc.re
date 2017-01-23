@@ -178,7 +178,7 @@ void lex_input(input &in) {
 
 		" " { in.push(ABT_WS); continue; }
 		"\t" { in.push(ABT_TAB); continue; }
-		("\r"?"\n")+ { in.push(ABT_NL); continue; }
+		"\r"?"\n" { in.push(ABT_NL); continue; }
 
 		extended_form = ("0" | [1-9][0-9]*) "x" [a-zA-Z0-9]+;
 		extended_form { in.push(ABT_NUM_EXTENDED, in); continue; }
