@@ -39,6 +39,9 @@ enum arua_abt {
 	ABT_COMMENT_HEADER,
 	ABT_STRUCT,
 	ABT_EQUALS,
+	ABT_ON,
+	ABT_BE,
+	ABT_TRAIT,
 };
 
 struct token {
@@ -190,6 +193,9 @@ void lex_input(input &in) {
 		"as" { in.push(ABT_AS); continue; }
 		"pub" { in.push(ABT_PUB); continue; }
 		"struct" { in.push(ABT_STRUCT); continue; }
+		"on" { in.push(ABT_ON); continue; }
+		"be" { in.push(ABT_BE); continue; }
+		"trait" { in.push(ABT_TRAIT); continue; }
 
 		"(" { in.push(ABT_OPAREN); continue; }
 		")" { in.push(ABT_CPAREN); continue; }
@@ -233,6 +239,9 @@ void print_highlighted(input &in) {
 		case ABT_AS: cerr << "\x1b[36;1mas\x1b[m"; continue;
 		case ABT_PUB: cerr << "\x1b[36;1mpub\x1b[m"; continue;
 		case ABT_STRUCT: cerr << "\x1b[36;1mstruct\x1b[m"; continue;
+		case ABT_ON: cerr << "\x1b[36;1mon\x1b[m"; continue;
+		case ABT_BE: cerr << "\x1b[36;1mbe\x1b[m"; continue;
+		case ABT_TRAIT: cerr << "\x1b[36;1mtrait\x1b[m"; continue;
 		case ABT_COMMA: cerr << "\x1b[2m,\x1b[m"; continue;
 		case ABT_PLUS: cerr << "\x1b[2m+\x1b[m"; continue;
 		case ABT_MINUS: cerr << "\x1b[2m-\x1b[m"; continue;

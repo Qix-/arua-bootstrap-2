@@ -29,3 +29,10 @@ pub struct Foo
 	bar i32 = 10
 	qux f64 = 89.99
 	qix str = "Hello, world!"
+
+trait Stringable
+	pub toString() str
+
+on Foo be Stringable
+	pub toString() str
+		ret "Ohai"
