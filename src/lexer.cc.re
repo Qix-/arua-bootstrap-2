@@ -235,7 +235,7 @@ void print_highlighted(input &in) {
 		case ABT_STR_BEGIN: cerr << "\x1b[38;5;208m\""; continue;
 		case ABT_STR_END: cerr << "\"\x1b[m"; continue;
 		case ABT_STR_LITERAL: cerr << ((token_val *)tkn.get())->val; continue;
-		case ABT_STR_ESCAPE: cerr << "\x1b[38;5;214;1m" << ((token_val *)tkn.get())->val << "\x1b[38;5;208m"; continue;
+		case ABT_STR_ESCAPE: cerr << "\x1b[38;5;214;1m" << ((token_val *)tkn.get())->val << "\x1b[0;38;5;208m"; continue;
 		case ABT_AS: cerr << "\x1b[36;1mas\x1b[m"; continue;
 		case ABT_PUB: cerr << "\x1b[36;1mpub\x1b[m"; continue;
 		case ABT_STRUCT: cerr << "\x1b[36;1mstruct\x1b[m"; continue;
