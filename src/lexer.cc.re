@@ -47,6 +47,7 @@ enum arua_abt {
 struct token {
 	token(arua_abt type) : type(type) {}
 	arua_abt type;
+	unsigned int line;
 };
 
 struct token_val : public token {
@@ -76,6 +77,7 @@ struct input {
 	unsigned char *tok;
 	bool eof;
 	vector<shared_ptr<token>> tokens;
+	unsigned int line;
 
 	FILE *const file;
 
@@ -86,6 +88,7 @@ struct input {
 			, mar(lim)
 			, tok(lim)
 			, eof(false)
+			, line(1)
 			, file(fopen(filename.c_str(), "rb")) {
 		if (!file) {
 			throw runtime_error("could not open file for reading: " + filename + "(" + strerror(errno) + ")");
@@ -121,6 +124,10 @@ struct input {
 	}
 
 	void push(token *tkn) {
+		tkn->line = this->line;
+		if (tkn->type == ABT_NL) {
+			++this->line;
+		}
 		this->tokens.push_back(shared_ptr<token>(tkn));
 	}
 
