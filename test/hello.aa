@@ -1,8 +1,26 @@
+## An example Arua document.
+##
+## This tests the ability of the lexer, and ultimately
+## outputs "Hello, world!" with a count of the passed arguments.
+
+# We're calling it a console here becuase why not.
 use sys.io.out as console
 
+#: Adds two numbers
+#:
+#: \param a The left number
+#: \param b The right number
+#: \return the sum of the two numbers
 fn add(a i32, b i32) i32
-	ret (a + b) * 0x2
+	ret a + b
 
+#: Main entry point
+#:
+#: \param args The arguments to the program
+#: \return an exit code (0 = success)
 pub fn main(args [str]) i32
+	# print out hello, and then say how many arguments were passed in.
 	console.write("Hello, world!\n{0} arguments were specified.\n", args.length)
-	ret 0
+
+	# nothing can really go wrong, here.
+	ret add(1, -1)

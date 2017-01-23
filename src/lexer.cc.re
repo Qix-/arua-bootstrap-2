@@ -34,6 +34,9 @@ enum arua_abt {
 	ABT_DIVIDE,
 	ABT_MULTIPLY,
 	ABT_PUB,
+	ABT_COMMENT,
+	ABT_COMMENT_DOC,
+	ABT_COMMENT_HEADER,
 };
 
 struct token {
@@ -163,6 +166,11 @@ void lex_input(input &in) {
 		re2c:define:YYFILL:naked = 1;
 
 		* { return; } // TODO error message
+
+		"#:" [^\r\n\f]* { in.push(ABT_COMMENT_DOC, in); continue; }
+		"##" [^\r\n\f]* { in.push(ABT_COMMENT_HEADER, in); continue; }
+		"#" [^\r\n\f]* { in.push(ABT_COMMENT, in); continue; }
+
 		" " { in.push(ABT_WS); continue; }
 		"\t" { in.push(ABT_TAB); continue; }
 		("\r"?"\n")+ { in.push(ABT_NL); continue; }
@@ -225,6 +233,9 @@ void print_highlighted(input &in) {
 		case ABT_MINUS: cerr << "\x1b[2m-\x1b[m"; continue;
 		case ABT_DIVIDE: cerr << "\x1b[2m/\x1b[m"; continue;
 		case ABT_MULTIPLY: cerr << "\x1b[2m*\x1b[m"; continue;
+		case ABT_COMMENT: cerr << "\x1b[38;5;242;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
+		case ABT_COMMENT_DOC: cerr << "\x1b[38;5;61;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
+		case ABT_COMMENT_HEADER: cerr << "\x1b[38;5;50;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
 		}
 	}
 
