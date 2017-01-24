@@ -15,6 +15,9 @@ public:
 
 	std::shared_ptr<SymbolRef> getBaseType() const throw();
 
+	virtual bool equals(const Type &type) const throw();
+	virtual bool canAssignTo(const Type &other) const throw();
+
 private:
 	std::shared_ptr<SymbolRef> baseType;
 };
