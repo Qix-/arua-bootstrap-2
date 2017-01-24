@@ -255,7 +255,7 @@ void print_token(const shared_ptr<token> &tkn, bool human = false) {
 	case ABT_EOF: cerr << (human ? "end of input" : ""); break;
 	case ABT_WS: cerr << (human ? "whitespace" : " "); break;
 	case ABT_TAB: cerr << (human ? "tab" : "\t"); break;
-	case ABT_NL: cerr << (human ? "\n" : "new line"); break;
+	case ABT_NL: cerr << (human ? "new line" : "\n"); break;
 	case ABT_FN: cerr << "\x1b[36;1mfn\x1b[m"; break;
 	case ABT_ID: cerr << ((token_val *)tkn.get())->val; break;
 	case ABT_OPAREN: cerr << "\x1b[2m(\x1b[m"; break;
@@ -335,7 +335,7 @@ bool unexpected(tokenitr &titr) {
 	// TODO give to error handler
 	// TODO maybe skip to next line on error here instead of blowing up on the first encountered parsing error?
 	cerr << "ERROR: unexpected token ";
-	print_token(*titr);
+	print_token(*titr, true);
 	cerr << " at " << (*titr)->line << ":" << (*titr)->col_start << endl;
 
 	// always return false.
@@ -425,6 +425,7 @@ shared_ptr<Module> arua::lex_file(string &filename) {
 	print_highlighted(in);
 	cerr << endl << "-----------------------------" << endl << endl;
 	print_locations(in);
+	cerr << endl << endl;
 
 	shared_ptr<Module> module(new Module(filename));
 	tokenitr titr = in.tokens.cbegin();
