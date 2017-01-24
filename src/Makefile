@@ -11,6 +11,7 @@ SRC := \
 	ast/type-array.cc \
 	ast/symbol.cc \
 	ast/symbol-direct.cc \
+	ast/symbol-indirect.cc \
 	ast/type-function.cc \
 	ast/symbol-context.cc \
 	ast/token-simple.cc \
