@@ -3,13 +3,27 @@
 using namespace arua;
 using namespace std;
 
-TypeArray::TypeArray(unsigned int line, unsigned int col, std::shared_ptr<SymbolRef> innerType, unsigned int depth)
-		: Type(line, col, PrimitiveType::ARRAY)
+TypeArray::TypeArray(std::shared_ptr<Type> innerType, unsigned int depth)
+		: Type(PrimitiveType::ARRAY)
 		, innerType(innerType)
 		, depth(depth) {
 }
 
-const shared_ptr<SymbolRef> TypeArray::getInnerType() const throw() {
+unsigned int TypeArray::getLine() const throw() {
+	return this->innerType->getLine();
+}
+
+unsigned int TypeArray::getColumnStart() const throw() {
+	// we can guarantee this since arrays don't allow for whitespace between the brackets and inner type.
+	return this->innerType->getColumnStart() - this->depth;
+}
+
+unsigned int TypeArray::getColumnEnd() const throw() {
+	// we can guarantee this since arrays don't allow for whitespace between the brackets and inner type.
+	return this->innerType->getColumnEnd() + this->depth;
+}
+
+const shared_ptr<Type> TypeArray::getInnerType() const throw() {
 	return this->innerType;
 }
 
@@ -20,7 +34,7 @@ bool TypeArray::equals(const Type &other) const throw() {
 
 	return other.getPrimitiveType() == PrimitiveType::ARRAY
 		&& ((TypeArray *)&other)->depth == this->depth
-		&& ((TypeArray *)&other)->innerType->resolve()->asType()->equals(*this->innerType->resolve()->asType());
+		&& ((TypeArray *)&other)->innerType->equals(*this->innerType);
 }
 
 bool TypeArray::canAssignTo(const Type &other) const throw() {
