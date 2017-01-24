@@ -342,6 +342,20 @@ bool unexpected(tokenitr &titr) {
 	return false;
 }
 
+bool burn(tokenitr &titr) {
+	for (;; ++titr) {
+		switch ((*titr)->type) {
+		case ABT_COMMENT:
+		case ABT_COMMENT_DOC:
+		case ABT_COMMENT_HEADER:
+		case ABT_NL:
+			break;
+		default:
+			return true;
+		}
+	}
+}
+
 bool parse_whitespace(tokenitr &titr) {
 	bool found = false;
 	while ((*++titr)->type == ABT_WS) {
@@ -407,6 +421,8 @@ bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
 
 bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 	while ((*titr)->type != ABT_EOF) {
+		burn(titr);
+
 		switch ((*titr)->type) {
 		case ABT_TYPEDEF:
 			if (parse_typedef(titr, module)) return false;
