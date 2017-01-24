@@ -1,3 +1,4 @@
+#include "symbol-context.h"
 #include "symbol-direct.h"
 
 using namespace arua;
@@ -22,4 +23,16 @@ unsigned int SymbolDirect::getColumnEnd() const throw() {
 
 const shared_ptr<Identifier> SymbolDirect::getIdentifier() const throw() {
 	return this->identifier;
+}
+
+shared_ptr<SymbolDirect> SymbolDirect::resolve() const throw() {
+	return shared_ptr<SymbolDirect>(new SymbolDirect(this->getContext(), this->identifier));
+}
+
+bool SymbolDirect::is(SymbolType type) const throw() {
+	return this->getContext()->resolveSymbolEntry(this->identifier)->type == type;
+}
+
+shared_ptr<Type> SymbolDirect::asType() const throw() {
+	return static_pointer_cast<Type>(this->getContext()->resolveSymbolEntry(this->identifier)->value);
 }

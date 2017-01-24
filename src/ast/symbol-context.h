@@ -21,7 +21,8 @@ struct SymbolEntry {
 };
 
 class SymbolContext : public SymbolVariant {
-	friend class Symbol;
+	friend class SymbolIndirect;
+	friend class SymbolDirect;
 public:
 	SymbolContext(std::shared_ptr<SymbolContext> parent = nullptr);
 	virtual ~SymbolContext() = default;

@@ -23,6 +23,7 @@ public:
 
 	const std::vector<const std::shared_ptr<Identifier>> getIdentifiers() const throw();
 
+	virtual std::shared_ptr<SymbolDirect> resolve() const throw();
 private:
 	std::vector<const std::shared_ptr<Identifier>> identifiers;
 };

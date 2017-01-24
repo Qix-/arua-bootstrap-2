@@ -8,11 +8,11 @@ TypeFunction::TypeFunction(unsigned int line, unsigned int colStart, unsigned in
 		, TokenSimple(line, colStart, colEnd) {
 }
 
-const shared_ptr<SymbolRef> TypeFunction::getReturnType() const throw() {
+const shared_ptr<Type> TypeFunction::getReturnType() const throw() {
 	return this->returnType;
 }
 
-const vector<shared_ptr<SymbolRef>> & TypeFunction::getArgTypes() const throw() {
+const vector<shared_ptr<Type>> & TypeFunction::getArgTypes() const throw() {
 	return this->argTypes;
 }
 
@@ -24,7 +24,7 @@ bool TypeFunction::equals(const Type &other) const throw() {
 
 	// check that return type is either both void (nullptr) or equal to each other
 	if (!((this->returnType.get() == nullptr && ((TypeFunction *)&other)->returnType.get() == nullptr)
-			|| ((TypeFunction *)&other)->returnType->resolve()->asType()->equals(*this->returnType->resolve()->asType()))) {
+			|| ((TypeFunction *)&other)->returnType->equals(*this->returnType))) {
 		return false;
 	}
 
@@ -39,7 +39,7 @@ bool TypeFunction::equals(const Type &other) const throw() {
 	auto otherArgEnd = ((TypeFunction *)&other)->argTypes.cend();
 
 	for (; thisArgItr != thisArgEnd && otherArgItr != otherArgEnd; thisArgItr++, otherArgItr++) {
-		if (!(*thisArgItr)->resolve()->asType()->equals(*(*otherArgItr)->resolve()->asType())) {
+		if (!(*thisArgItr)->equals(**otherArgItr)) {
 			return false;
 		}
 	}

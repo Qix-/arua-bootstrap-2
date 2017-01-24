@@ -5,8 +5,13 @@
 #include <memory>
 #include <vector>
 
-#include "ast/symbol-ref.h"
-#include "ast/type-def.h"
+#include "ast/module.h"
+#include "ast/symbol-direct.h"
+#include "ast/symbol-indirect.h"
+#include "ast/type.h"
+#include "ast/type-array.h"
+#include "ast/type-scalar.h"
+#include "ast/type-symbol.h"
 #include "lexer.h"
 
 // just used in the column math.
@@ -373,23 +378,100 @@ inline bool expect(tokenitr &titr, arua_abt type) {
 	}
 }
 
-bool parse_symref(tokenitr &titr, shared_ptr<SymbolRef> baseRef) {
-	bool id = true;
+bool parse_identifier(tokenitr &titr, shared_ptr<Identifier> &id) {
+	if ((*titr)->type != ABT_ID) return unexpected(titr);
 
-	for (; id || (*titr)->type != ABT_NL; ++titr, id = !id) {
-		if (id) {
-			if ((*titr)->type != ABT_ID) {
-				return unexpected(titr);
-			}
+	id.reset(new Identifier((*titr)->line, (*titr)->col_start, ((token_val *)&*titr)->val));
+	++titr;
+	return true;
+}
 
-			baseRef->addIdentifier(((token_val *)&*titr)->val);
-		} else {
-			// the for loop already checks for NL for us; here, we should always expect a dot.
-			if (!expect(titr, ABT_DOT)) return false;
+bool parse_type(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx);
+
+bool parse_type_array(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx) {
+	unsigned int depth = 0;
+
+	while (expect(titr, ABT_OBRACKET)) {
+		++depth;
+	}
+
+	shared_ptr<Type> innerType;
+	if (!parse_type(titr, innerType, symCtx)) return false;
+
+	for (unsigned int i = 0; i < depth; i++) {
+		if (!expect(titr, ABT_CBRACKET)) return unexpected(titr);
+	}
+
+	type.reset(new TypeArray(innerType, depth));
+	return true;
+}
+
+bool parse_type_symbol_or_scalar(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx) {
+	shared_ptr<SymbolIndirect> indirect(new SymbolIndirect(symCtx));
+
+	// get first identifier
+	shared_ptr<Identifier> firstId;
+	if (!parse_identifier(titr, firstId)) return false;
+	indirect->addIdentifier(firstId);
+
+	// get more
+	bool single = true;
+	while (expect(titr, ABT_DOT)) {
+		shared_ptr<Identifier> nextId;
+		if (!parse_identifier(titr, nextId)) return unexpected(titr);
+		single = false;
+		indirect->addIdentifier(nextId);
+	}
+
+	if (!single) {
+		type.reset(new TypeSymbol(indirect));
+		return true;
+	}
+
+	// scalar?
+	string firstStr = firstId->getIdentifier();
+	ScalarClass scalarClass;
+	switch (firstStr[0]) {
+	case 'u':
+		scalarClass = ScalarClass::UINT;
+		break;
+	case 'i':
+		scalarClass = ScalarClass::INT;
+		break;
+	case 'f':
+		scalarClass = ScalarClass::FLOAT;
+		break;
+	default:
+		goto notAScalar;
+	}
+
+	{
+		string widthStr = firstStr.substr(1);
+		if (firstStr.length() > 1 && all_of(widthStr.begin(), widthStr.end(), ::isdigit)) {
+			type.reset(new TypeScalar((*titr)->line, (*titr)->col_start, (*titr)->col_end, scalarClass, ::atoi(widthStr.c_str())));
 		}
 	}
 
+	notAScalar:
+	type.reset(new TypeSymbol(shared_ptr<Symbol>(new SymbolDirect(symCtx, firstId))));
 	return true;
+}
+
+bool parse_type(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx) {
+	// parse arrays
+	if ((*titr)->type == ABT_OBRACKET) {
+		return parse_type_array(titr, type, symCtx);
+	}
+
+	// parse functions
+	if ((*titr)->type == ABT_FN) {
+		// TODO not entirely sure about this yet.
+		cerr << "NOTICE (fatal): function type (outside of declarations) are not yes supported (at "
+			<< (*titr)->line << ":" << (*titr)->col_start << ")" << endl;
+		return false;
+	}
+
+	return parse_type_symbol_or_scalar(titr, type, symCtx);
 }
 
 bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
@@ -398,9 +480,8 @@ bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
 	if (!expect(titr, ABT_TYPEDEF)) return unexpected(titr);
 	if (!parse_whitespace(titr)) return false;
 
-	// expect a symbol ref
-	shared_ptr<SymbolRef> baseRef(new SymbolRef(module));
-	if (!parse_symref(titr, baseRef)) {
+	shared_ptr<Type> baseType;
+	if (!parse_type(titr, baseType, module)) {
 		return false;
 	}
 
@@ -408,13 +489,12 @@ bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
 	if (!expect(titr, ABT_AS)) return unexpected(titr);
 	if (!parse_whitespace(titr)) return false;
 
-	if ((*titr)->type != ABT_ID) return unexpected(titr);
-	string newName = ((token_val *)&*titr)->val;
+	shared_ptr<Identifier> name;
+	if (!parse_identifier(titr, name)) return false;
 
 	if (!expect(titr, ABT_NL)) return false;
 
-	shared_ptr<TypeDef> typeDef(new TypeDef(beginToken->line, beginToken->col_start, baseRef));
-	module->addType(newName, typeDef);
+	module->addType(name, baseType);
 
 	return true;
 }

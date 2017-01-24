@@ -1,3 +1,4 @@
+#include "symbol-direct.h"
 #include "type-symbol.h"
 
 using namespace arua;
@@ -34,5 +35,5 @@ bool TypeSymbol::equals(const Type &type) const throw() {
 bool TypeSymbol::canAssignTo(const Type &other) const throw() {
 	auto resolved = this->symbol->resolve();
 	return resolved->is(SymbolType::TYPE)
-		&& resolved->asType()->canAssignTo(type);
+		&& resolved->asType()->canAssignTo(other);
 }
