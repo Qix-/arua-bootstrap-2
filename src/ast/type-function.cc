@@ -23,7 +23,7 @@ bool TypeFunction::equals(const Type &other) const throw() {
 
 	// check that return type is either both void (nullptr) or equal to each other
 	if (!((this->returnType.get() == nullptr && ((TypeFunction *)&other)->returnType.get() == nullptr)
-			|| ((TypeFunction *)&other)->returnType->resolveType()->equals(*this->returnType->resolveType()))) {
+			|| ((TypeFunction *)&other)->returnType->resolve()->asType()->equals(*this->returnType->resolve()->asType()))) {
 		return false;
 	}
 
@@ -38,7 +38,7 @@ bool TypeFunction::equals(const Type &other) const throw() {
 	auto otherArgEnd = ((TypeFunction *)&other)->argTypes.cend();
 
 	for (; thisArgItr != thisArgEnd && otherArgItr != otherArgEnd; thisArgItr++, otherArgItr++) {
-		if (!(*thisArgItr)->resolveType()->equals(*(*otherArgItr)->resolveType())) {
+		if (!(*thisArgItr)->resolve()->asType()->equals(*(*otherArgItr)->resolve()->asType())) {
 			return false;
 		}
 	}

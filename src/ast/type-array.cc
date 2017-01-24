@@ -20,7 +20,7 @@ bool TypeArray::equals(const Type &other) const throw() {
 
 	return other.getPrimitiveType() == PrimitiveType::ARRAY
 		&& ((TypeArray *)&other)->depth == this->depth
-		&& ((TypeArray *)&other)->innerType->resolveType()->equals(*this->innerType->resolveType());
+		&& ((TypeArray *)&other)->innerType->resolve()->asType()->equals(*this->innerType->resolve()->asType());
 }
 
 bool TypeArray::canAssignTo(const Type &other) const throw() {

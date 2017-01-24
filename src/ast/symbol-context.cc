@@ -59,7 +59,7 @@ shared_ptr<SymbolEntryBase> SymbolContext::resolveSymbolEntry(string name) const
 	case SymbolType::ALIAS: {
 		// further resolve
 		auto alias = static_pointer_cast<SymbolEntry<SymbolRef>>(entry->second)->value;
-		auto aliasSym = alias->resolveSymbol();
+		auto aliasSym = alias->resolve();
 		return aliasSym->getSymbolContext()->resolveSymbolEntry(aliasSym->getIdentifier());
 	}
 	default:

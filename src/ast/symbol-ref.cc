@@ -21,7 +21,7 @@ const vector<std::string> & SymbolRef::getIdentifiers() const throw() {
 	return this->identifiers;
 }
 
-shared_ptr<Symbol> SymbolRef::resolveSymbol() const throw() {
+shared_ptr<Symbol> SymbolRef::resolve() const throw() {
 	if (this->identifiers.size() == 0) {
 		return nullptr;
 	}
@@ -35,7 +35,7 @@ shared_ptr<Symbol> SymbolRef::resolveSymbol() const throw() {
 
 	// iterate until one before the end of the list
 	for (; (itr + 1) != this->identifiers.cend(); itr++) {
-		curCtx = Symbol(*itr, curCtx).resolveContext();
+		curCtx = Symbol(*itr, curCtx).asContext();
 
 		if (!curCtx) {
 			// TODO when we're using identifier tokens and not strings, include their line/col info here

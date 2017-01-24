@@ -23,10 +23,10 @@ public:
 	// which means this might return INVALID even for valid symbols that haven't been lexed yet.
 	//
 	// Make sure to only call this after lexing is finished.
-	SymbolType resolveSymbolType() const throw();
+	SymbolType getSymbolType() const throw();
 
-	const std::shared_ptr<Type> resolveType() const throw();
-	const std::shared_ptr<SymbolContext> resolveContext() const throw();
+	const std::shared_ptr<Type> asType() const throw();
+	const std::shared_ptr<SymbolContext> asContext() const throw();
 
 private:
 	std::string identifier;

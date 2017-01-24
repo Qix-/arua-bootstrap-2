@@ -14,9 +14,9 @@ shared_ptr<SymbolRef> TypeDef::getBaseType() const throw() {
 
 
 bool TypeDef::equals(const Type &other) const throw() {
-	return this->baseType->resolveType()->equals(other);
+	return this->baseType->resolve()->asType()->equals(other);
 }
 
 bool TypeDef::canAssignTo(const Type &other) const throw() {
-	return this->baseType->resolveType()->canAssignTo(other);
+	return this->baseType->resolve()->asType()->canAssignTo(other);
 }

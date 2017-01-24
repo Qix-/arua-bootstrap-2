@@ -16,11 +16,11 @@ shared_ptr<SymbolContext> Symbol::getSymbolContext() const throw() {
 	return this->symCtx;
 }
 
-SymbolType Symbol::resolveSymbolType() const throw() {
+SymbolType Symbol::getSymbolType() const throw() {
 	return this->symCtx->resolveSymbolEntry(this->identifier)->type;
 }
 
-const shared_ptr<Type> Symbol::resolveType() const throw() {
+const shared_ptr<Type> Symbol::asType() const throw() {
 	auto entry = this->symCtx->resolveSymbolEntry(this->identifier);
 	if (entry->type != SymbolType::TYPE) {
 		return nullptr;
@@ -29,7 +29,7 @@ const shared_ptr<Type> Symbol::resolveType() const throw() {
 	return static_pointer_cast<SymbolEntry<Type>>(entry)->value;
 }
 
-const shared_ptr<SymbolContext> Symbol::resolveContext() const throw() {
+const shared_ptr<SymbolContext> Symbol::asContext() const throw() {
 	auto entry = this->symCtx->resolveSymbolEntry(this->identifier);
 	if (entry->type != SymbolType::CTXREF) {
 		return nullptr;

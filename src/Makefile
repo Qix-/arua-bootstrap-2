@@ -14,7 +14,6 @@ SRC := \
 	ast/type-function.cc \
 	ast/type-def.cc \
 	ast/symbol-ref.cc \
-	ast/symbol-context-base.cc \
 	ast/symbol-context.cc \
 	aruab.cc
 
