@@ -5,9 +5,8 @@
 using namespace arua;
 using namespace std;
 
-SymbolRef::SymbolRef(unsigned int line, unsigned int col, shared_ptr<SymbolContext> symCtx)
-		: Token(line, col)
-		, symCtx(symCtx) {
+SymbolRef::SymbolRef(shared_ptr<SymbolContext> symCtx)
+		: symCtx(symCtx) {
 }
 
 void SymbolRef::addIdentifier(string identifier) throw() {

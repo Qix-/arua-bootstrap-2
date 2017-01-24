@@ -8,14 +8,13 @@
 
 #include "symbol.h"
 #include "symbol-context.h"
-#include "token.h"
 #include "type.h"
 
 namespace arua {
 
-class SymbolRef : public Token {
+class SymbolRef {
 public:
-	SymbolRef(unsigned int line, unsigned int col, std::shared_ptr<SymbolContext> symCtx);
+	SymbolRef(std::shared_ptr<SymbolContext> symCtx);
 
 	void addIdentifier(std::string identifier) throw();
 
