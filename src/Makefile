@@ -10,6 +10,7 @@ SRC := \
 	ast/type.cc \
 	ast/type-scalar.cc \
 	ast/type-array.cc \
+	ast/symbol.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
