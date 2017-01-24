@@ -15,7 +15,7 @@ enum class PrimitiveType {
 	SYMBOL,
 };
 
-class Type : public Token, public Target {
+class Type : public virtual Token, public Target {
 public:
 	Type(PrimitiveType primType);
 

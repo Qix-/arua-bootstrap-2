@@ -6,7 +6,7 @@
 
 namespace arua {
 
-class TokenSimple : public Token {
+class TokenSimple : public virtual Token {
 public:
 	TokenSimple(unsigned int line, unsigned int columnStart, unsigned int columnEnd);
 	virtual ~TokenSimple() = default;
