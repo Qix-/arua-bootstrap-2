@@ -363,8 +363,9 @@ bool burn(tokenitr &titr) {
 
 bool parse_whitespace(tokenitr &titr) {
 	bool found = false;
-	while ((*++titr)->type == ABT_WS) {
+	while ((*titr)->type == ABT_WS) {
 		found = true;
+		++titr;
 	}
 	return found ? true : unexpected(titr);
 }
@@ -502,10 +503,9 @@ bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
 bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 	while ((*titr)->type != ABT_EOF) {
 		burn(titr);
-
 		switch ((*titr)->type) {
 		case ABT_TYPEDEF:
-			if (parse_typedef(titr, module)) return false;
+			if (!parse_typedef(titr, module)) return false;
 			break;
 		default:
 			return unexpected(titr);

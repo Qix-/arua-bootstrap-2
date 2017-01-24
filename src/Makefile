@@ -30,7 +30,7 @@ clean:
 	rm -rf aruab $(OBJS)
 
 aruab : $(OBJS)
-	$(CXX) -o $@ $^ -lxopt -L../ext/xopt
+	$(CXX) -o $@ $^ -g3 -O0 -lxopt -L../ext/xopt
 
 %.o : %.cc
 	$(CXX) -c -o $@ $< -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt
