@@ -4,9 +4,11 @@
 
 #include <string>
 
+#include "symbol-context-base.h" // XXX when we start compiling against other modules, this will change to symbol-context.
+
 namespace arua {
 
-class Module {
+class Module : public SymbolContextBase { // TODO change to SymbolContext when we start compiling against other modules
 public:
 	Module(const std::string &name);
 
