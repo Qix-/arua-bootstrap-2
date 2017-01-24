@@ -2,8 +2,11 @@
 #include <cerrno>
 #include <cstring>
 #include <iostream> // XXX DEBUG
+#include <memory>
 #include <vector>
 
+#include "ast/symbol-ref.h"
+#include "ast/type-def.h"
 #include "lexer.h"
 
 // just used in the column math.
@@ -15,6 +18,7 @@ using namespace arua;
 using namespace std;
 
 enum arua_abt {
+	ABT_EOF,
 	ABT_WS,
 	ABT_TAB,
 	ABT_NL,
@@ -67,14 +71,14 @@ struct token_val : public token {
 	string val;
 };
 
+typedef vector<shared_ptr<token>>::const_iterator tokenitr;
+
 /*!re2c
 	re2c:define:YYCTYPE = "unsigned char";
 */
 
 /*!max:re2c*/
 static const size_t SIZE = 64 * 1024;
-
-#define LAST_TOKEN
 
 // shamelessly copied from http://re2c.org/examples/example_07.html
 // modified to be a bit more contained.
@@ -197,7 +201,7 @@ void lex_input(input &in) {
 		re2c:define:YYFILL = "if (!in.fill(@@)) return;";
 		re2c:define:YYFILL:naked = 1;
 
-		* { return; } // TODO error message
+		* { in.push(ABT_EOF); return; } // TODO error message
 
 		"#:" [^\r\n\f]* { in.pushv(ABT_COMMENT_DOC); continue; }
 		"##" [^\r\n\f]* { in.pushv(ABT_COMMENT_HEADER); continue; }
@@ -246,11 +250,12 @@ void lex_input(input &in) {
 	}
 }
 
-void print_token(const shared_ptr<token> &tkn) {
+void print_token(const shared_ptr<token> &tkn, bool human = false) {
 	switch (tkn->type) {
-	case ABT_WS: cerr << " "; break;
-	case ABT_TAB: cerr << "\t"; break;
-	case ABT_NL: cerr << "\n"; break;
+	case ABT_EOF: cerr << (human ? "end of input" : ""); break;
+	case ABT_WS: cerr << (human ? "whitespace" : " "); break;
+	case ABT_TAB: cerr << (human ? "tab" : "\t"); break;
+	case ABT_NL: cerr << (human ? "\n" : "new line"); break;
 	case ABT_FN: cerr << "\x1b[36;1mfn\x1b[m"; break;
 	case ABT_ID: cerr << ((token_val *)tkn.get())->val; break;
 	case ABT_OPAREN: cerr << "\x1b[2m(\x1b[m"; break;
@@ -282,9 +287,27 @@ void print_token(const shared_ptr<token> &tkn) {
 	case ABT_DIVIDE: cerr << "\x1b[2m/\x1b[m"; break;
 	case ABT_MULTIPLY: cerr << "\x1b[2m*\x1b[m"; break;
 	case ABT_EQUALS: cerr << "\x1b[2m=\x1b[m"; break;
-	case ABT_COMMENT: cerr << "\x1b[38;5;242;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; break;
-	case ABT_COMMENT_DOC: cerr << "\x1b[38;5;61;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; break;
-	case ABT_COMMENT_HEADER: cerr << "\x1b[38;5;50;2m" << ((token_val *)tkn.get())->val << "\x1b[m"; break;
+	case ABT_COMMENT:
+		if (human) {
+			cerr << "comment";
+		} else {
+			cerr << "\x1b[38;5;242;2m" << ((token_val *)tkn.get())->val << "\x1b[m";
+		}
+		break;
+	case ABT_COMMENT_DOC:
+		if (human) {
+			cerr << "documentation comment";
+		} else {
+			cerr << "\x1b[38;5;61;2m" << ((token_val *)tkn.get())->val << "\x1b[m";
+		}
+		break;
+	case ABT_COMMENT_HEADER:
+		if (human) {
+			cerr << "header comment";
+		} else {
+			cerr << "\x1b[38;5;50;2m" << ((token_val *)tkn.get())->val << "\x1b[m";
+		}
+		break;
 	}
 }
 
@@ -308,6 +331,86 @@ void print_locations(input &in) {
 	}
 }
 
+bool unexpected(tokenitr &titr) {
+	// TODO give to error handler
+	// TODO maybe skip to next line on error here instead of blowing up on the first encountered parsing error?
+	cerr << "ERROR: unexpected token ";
+	print_token(*titr);
+	cerr << " at " << (*titr)->line << ":" << (*titr)->col_start << endl;
+
+	// always return false.
+	return false;
+}
+
+bool parse_whitespace(tokenitr &titr) {
+	bool found = false;
+	while ((*++titr)->type == ABT_WS) {
+		found = true;
+	}
+	return found ? true : unexpected(titr);
+}
+
+inline bool expect(tokenitr &titr, arua_abt type) {
+	if ((*titr)->type == type) {
+		++titr;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool parse_symref(tokenitr &titr, shared_ptr<SymbolRef> baseRef, shared_ptr<SymbolContext> symCtx) {
+	// at least one ID.
+	if ((*titr)->type != ABT_ID) {
+		return unexpected(titr);
+	}
+
+
+}
+
+bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
+	auto beginToken = *titr;
+
+	if (!expect(titr, ABT_TYPEDEF)) return unexpected(titr);
+	if (!parse_whitespace(titr)) return false;
+
+	// expect a symbol ref
+	shared_ptr<SymbolRef> baseRef;
+	if (!parse_symref(titr, baseRef, module)) {
+		return false;
+	}
+
+	if (!parse_whitespace(titr)) return false;
+	if (!expect(titr, ABT_AS)) return unexpected(titr);
+	if (!parse_whitespace(titr)) return false;
+
+	shared_ptr<Symbol> symbol;
+	if (!parse_symbol(titr)) {
+		return false;
+	}
+
+	if (!expect(titr, ABT_NL)) return false;
+
+	shared_ptr<TypeDef> typeDef(new TypeDef(beginToken->line, beginToken->col_start, baseRef));
+	module->addType(symbol, typeDef);
+
+	return true;
+}
+
+bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
+	while ((*titr)->type != ABT_EOF) {
+		switch ((*titr)->type) {
+		case ABT_TYPEDEF:
+			if (parse_typedef(titr, module)) return false;
+			break;
+		default:
+			return unexpected(titr);
+		}
+	}
+
+	return true;
+}
+
 shared_ptr<Module> arua::lex_file(string &filename) {
 	input in(filename);
 	lex_input(in);
@@ -316,5 +419,6 @@ shared_ptr<Module> arua::lex_file(string &filename) {
 	print_locations(in);
 
 	shared_ptr<Module> module(new Module(filename));
-	return module;
+	tokenitr titr = in.tokens.cbegin();
+	return parse_module(titr, module) ? module : shared_ptr<Module>(nullptr);
 }

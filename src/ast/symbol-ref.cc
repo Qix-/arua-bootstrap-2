@@ -3,22 +3,21 @@
 using namespace arua;
 using namespace std;
 
-SymbolRef::SymbolRef(unsigned int line, unsigned int col, shared_ptr<SymbolContextBase> symCtx, shared_ptr<Symbol> symbol)
+SymbolRef::SymbolRef(unsigned int line, unsigned int col, shared_ptr<SymbolContext> symCtx)
 		: Token(line, col)
-		, symCtx(symCtx)
-		, symbol(symbol) {
+		, symCtx(symCtx) {
 }
 
-const shared_ptr<SymbolContextBase> SymbolRef::getSymbolContext() const throw() {
+const shared_ptr<SymbolContext> SymbolRef::getSymbolContext() const throw() {
 	return this->symCtx;
 }
 
-const shared_ptr<Symbol> SymbolRef::getSymbol() const throw() {
-	return this->symbol;
+const vector<shared_ptr<Symbol>> & SymbolRef::getSymbols() const throw() {
+	return this->symbols;
 }
 
 SymbolType SymbolRef::getSymbolType() const throw() {
-	return this->symCtx->getSymbolType(this->symbol);
+	this->symCtx->getSymbolType(this->symbol);
 }
 
 const shared_ptr<Type> SymbolRef::resolveType() const throw() {
