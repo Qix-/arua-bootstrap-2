@@ -359,13 +359,23 @@ inline bool expect(tokenitr &titr, arua_abt type) {
 	}
 }
 
-bool parse_symref(tokenitr &titr, shared_ptr<SymbolRef> baseRef, shared_ptr<SymbolContext> symCtx) {
-	// at least one ID.
-	if ((*titr)->type != ABT_ID) {
-		return unexpected(titr);
+bool parse_symref(tokenitr &titr, shared_ptr<SymbolRef> baseRef) {
+	bool id = true;
+
+	for (; id || (*titr)->type != ABT_NL; ++titr, id = !id) {
+		if (id) {
+			if ((*titr)->type != ABT_ID) {
+				return unexpected(titr);
+			}
+
+			baseRef->addIdentifier(((token_val *)&*titr)->val);
+		} else {
+			// the for loop already checks for NL for us; here, we should always expect a dot.
+			if (!expect(titr, ABT_DOT)) return false;
+		}
 	}
 
-
+	return true;
 }
 
 bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
@@ -375,8 +385,8 @@ bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
 	if (!parse_whitespace(titr)) return false;
 
 	// expect a symbol ref
-	shared_ptr<SymbolRef> baseRef;
-	if (!parse_symref(titr, baseRef, module)) {
+	shared_ptr<SymbolRef> baseRef(new SymbolRef(module));
+	if (!parse_symref(titr, baseRef)) {
 		return false;
 	}
 
@@ -384,15 +394,13 @@ bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
 	if (!expect(titr, ABT_AS)) return unexpected(titr);
 	if (!parse_whitespace(titr)) return false;
 
-	shared_ptr<Symbol> symbol;
-	if (!parse_symbol(titr)) {
-		return false;
-	}
+	if ((*titr)->type != ABT_ID) return unexpected(titr);
+	string newName = ((token_val *)&*titr)->val;
 
 	if (!expect(titr, ABT_NL)) return false;
 
 	shared_ptr<TypeDef> typeDef(new TypeDef(beginToken->line, beginToken->col_start, baseRef));
-	module->addType(symbol, typeDef);
+	module->addType(newName, typeDef);
 
 	return true;
 }
