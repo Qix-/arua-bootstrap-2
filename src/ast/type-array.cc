@@ -8,7 +8,7 @@ TypeArray::TypeArray(unsigned int line, unsigned int col, std::shared_ptr<Type> 
 		, innerType(innerType) {
 }
 
-shared_ptr<Type> TypeArray::getInnerType() const throw() {
+const shared_ptr<Type> TypeArray::getInnerType() const throw() {
 	return this->innerType;
 }
 

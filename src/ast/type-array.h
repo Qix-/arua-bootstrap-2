@@ -12,7 +12,7 @@ class TypeArray : public Type {
 public:
 	TypeArray(unsigned int line, unsigned int col, std::shared_ptr<Type> innerType);
 
-	std::shared_ptr<Type> getInnerType() const throw();
+	const std::shared_ptr<Type> getInnerType() const throw();
 
 	virtual bool equals(const Type &type) const throw();
 	virtual bool canAssignTo(const Type &other) const throw();
