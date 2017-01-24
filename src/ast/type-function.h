@@ -5,14 +5,15 @@
 #include <vector>
 #include <memory>
 
+#include "token-simple.h"
 #include "type.h"
 #include "symbol-ref.h"
 
 namespace arua {
 
-class TypeFunction : public Type {
+class TypeFunction : public Type, public TokenSimple {
 public:
-	TypeFunction(unsigned int line, unsigned int col);
+	TypeFunction(unsigned int line, unsigned int colStart, unsigned int colEnd);
 
 	// a shared_ptr with a ptr of 0 means void
 	void setReturnType(std::shared_ptr<SymbolRef> returnType);

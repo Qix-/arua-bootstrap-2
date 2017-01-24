@@ -15,7 +15,7 @@ enum class PrimitiveType {
 
 class Type : public Token {
 public:
-	Type(unsigned int line, unsigned int col, PrimitiveType primType);
+	Type(PrimitiveType primType);
 
 	PrimitiveType getPrimitiveType() const throw();
 

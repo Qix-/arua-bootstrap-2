@@ -2,8 +2,9 @@
 
 using namespace arua;
 
-TypeScalar::TypeScalar(unsigned int line, unsigned int col, ScalarClass scalarClass, unsigned int width)
-		: Type(line, col, PrimitiveType::SCALAR)
+TypeScalar::TypeScalar(unsigned int line, unsigned int colStart, unsigned int colEnd, ScalarClass scalarClass, unsigned int width)
+		: Type(PrimitiveType::SCALAR)
+		, TokenSimple(line, colStart, colEnd)
 		, scalarClass(scalarClass)
 		, width(width) {
 }

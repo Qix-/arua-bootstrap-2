@@ -2,6 +2,7 @@
 #define ARUAB_AST_TYPE_SCALAR_H__
 #pragma once
 
+#include "token-simple.h"
 #include "type.h"
 
 namespace arua {
@@ -12,9 +13,9 @@ enum class ScalarClass {
 	FLOAT,
 };
 
-class TypeScalar : public Type {
+class TypeScalar : public Type, public TokenSimple {
 public:
-	TypeScalar(unsigned int line, unsigned int col, ScalarClass scalarClass, unsigned int width);
+	TypeScalar(unsigned int line, unsigned int colStart, unsigned int colEnd, ScalarClass scalarClass, unsigned int width);
 
 	ScalarClass getScalarClass() const throw();
 	unsigned int getWidth() const throw();
