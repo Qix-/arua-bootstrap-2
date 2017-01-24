@@ -17,6 +17,8 @@ enum arua_abt {
 	ABT_CPAREN,
 	ABT_OBRACKET,
 	ABT_CBRACKET,
+	ABT_RANGLE,
+	ABT_LANGLE,
 	ABT_ID,
 	ABT_FN,
 	ABT_RET,
@@ -209,6 +211,8 @@ void lex_input(input &in) {
 		")" { in.push(ABT_CPAREN); continue; }
 		"[" { in.push(ABT_OBRACKET); continue; }
 		"]" { in.push(ABT_CBRACKET); continue; }
+		"<" { in.push(ABT_LANGLE); continue; }
+		">" { in.push(ABT_RANGLE); continue; }
 		"." { in.push(ABT_DOT); continue; }
 		"," { in.push(ABT_COMMA); continue; }
 		"+" { in.push(ABT_PLUS); continue; }
@@ -235,6 +239,8 @@ void print_highlighted(input &in) {
 		case ABT_CPAREN: cerr << "\x1b[2m)\x1b[m"; continue;
 		case ABT_OBRACKET: cerr << "\x1b[2m[\x1b[m"; continue;
 		case ABT_CBRACKET: cerr << "\x1b[2m]\x1b[m"; continue;
+		case ABT_RANGLE: cerr << "\x1b[2m>\x1b[m"; continue;
+		case ABT_LANGLE: cerr << "\x1b[2m<\x1b[m"; continue;
 		case ABT_RET: cerr << "\x1b[36;1mret\x1b[m"; continue;
 		case ABT_NUM:
 		case ABT_NUM_EXTENDED: cerr << "\x1b[31m" << ((token_val *)tkn.get())->val << "\x1b[m"; continue;
