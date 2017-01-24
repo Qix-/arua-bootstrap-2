@@ -6,14 +6,9 @@ namespace arua {
 
 class Token {
 public:
-	Token(unsigned int line, unsigned int column);
-
-	unsigned int getLine() const throw();
-	unsigned int getColumn() const throw();
-
-private:
-	unsigned int line;
-	unsigned int col;
+	virtual unsigned int getLine() const throw() = 0;
+	virtual unsigned int getColumnStart() const throw() = 0;
+	virtual unsigned int getColumnEnd() const throw() = 0;
 };
 
 }

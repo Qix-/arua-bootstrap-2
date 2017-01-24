@@ -6,7 +6,6 @@ SRC := \
 	cli.cc \
 	lexer.cc.re \
 	ast/module.cc \
-	ast/token.cc \
 	ast/type.cc \
 	ast/type-scalar.cc \
 	ast/type-array.cc \
@@ -15,6 +14,7 @@ SRC := \
 	ast/type-def.cc \
 	ast/symbol-ref.cc \
 	ast/symbol-context.cc \
+	ast/token-simple.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
