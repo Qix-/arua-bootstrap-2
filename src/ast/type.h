@@ -2,6 +2,7 @@
 #define ARUAB_AST_TYPE_H__
 #pragma once
 
+#include "target.h"
 #include "token.h"
 
 namespace arua {
@@ -13,7 +14,7 @@ enum class PrimitiveType {
 	DEF,
 };
 
-class Type : public Token {
+class Type : public Token, public Target {
 public:
 	Type(PrimitiveType primType);
 
