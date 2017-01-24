@@ -12,6 +12,7 @@ SRC := \
 	ast/type-array.cc \
 	ast/symbol.cc \
 	ast/type-function.cc \
+	ast/type-def.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
