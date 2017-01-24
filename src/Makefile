@@ -10,6 +10,7 @@ SRC := \
 	ast/type-scalar.cc \
 	ast/type-array.cc \
 	ast/symbol.cc \
+	ast/symbol-direct.cc \
 	ast/type-function.cc \
 	ast/symbol-context.cc \
 	ast/token-simple.cc \
