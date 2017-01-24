@@ -1,0 +1,5 @@
+## Basic program that exits with a status code of 1 when any arguments are passed to it.
+## Otherwise, exits with status code 0.
+
+pub fn main(args [str]) i32
+	ret args.length > 0
