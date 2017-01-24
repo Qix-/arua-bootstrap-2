@@ -11,7 +11,7 @@ enum class PrimitiveType {
 	SCALAR,
 	ARRAY,
 	FUNCTION,
-	DEF,
+	SYMBOL,
 };
 
 class Type : public Token, public Target {

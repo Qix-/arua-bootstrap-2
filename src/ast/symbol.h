@@ -9,6 +9,7 @@
 namespace arua {
 
 class SymbolContext;
+class SymbolDirect;
 
 class Symbol : public Token {
 public:
@@ -16,8 +17,7 @@ public:
 
 	std::shared_ptr<SymbolContext> getContext() const throw();
 
-protected:
-	virtual std::shared_ptr<Symbol> resolve() const throw() = 0;
+	virtual std::shared_ptr<SymbolDirect> resolve() const throw() = 0;
 
 private:
 	std::shared_ptr<SymbolContext> symCtx;
