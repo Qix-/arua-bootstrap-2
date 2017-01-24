@@ -6,6 +6,7 @@
 
 #include "symbol-context-base.h"
 #include "token.h"
+#include "type.h"
 
 namespace arua {
 
@@ -21,6 +22,8 @@ public:
 	//
 	// Make sure to only call this after lexing is finished.
 	SymbolType getSymbolType() const throw();
+
+	const std::shared_ptr<Type> resolveType() const throw();
 
 private:
 	std::shared_ptr<SymbolContextBase> symCtx;

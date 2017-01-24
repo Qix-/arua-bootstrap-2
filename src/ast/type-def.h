@@ -5,17 +5,18 @@
 #include <memory>
 
 #include "type.h"
+#include "symbol-ref.h"
 
 namespace arua {
 
 class TypeDef : public Type {
 public:
-	TypeDef(unsigned int line, unsigned int col, std::shared_ptr<Type> baseType);
+	TypeDef(unsigned int line, unsigned int col, std::shared_ptr<SymbolRef> baseType);
 
-	std::shared_ptr<Type> getBaseType() const throw();
+	std::shared_ptr<SymbolRef> getBaseType() const throw();
 
 private:
-	std::shared_ptr<Type> baseType;
+	std::shared_ptr<SymbolRef> baseType;
 };
 
 }

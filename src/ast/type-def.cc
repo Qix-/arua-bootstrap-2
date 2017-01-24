@@ -3,11 +3,11 @@
 using namespace arua;
 using namespace std;
 
-TypeDef::TypeDef(unsigned int line, unsigned int col, shared_ptr<Type> baseType)
+TypeDef::TypeDef(unsigned int line, unsigned int col, shared_ptr<SymbolRef> baseType)
 		: Type(line, col, PrimitiveType::DEF)
 		, baseType(baseType) {
 }
 
-shared_ptr<Type> TypeDef::getBaseType() const throw() {
+shared_ptr<SymbolRef> TypeDef::getBaseType() const throw() {
 	return this->baseType;
 }

@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "type.h"
+#include "symbol-ref.h"
 
 namespace arua {
 
@@ -14,18 +15,18 @@ public:
 	TypeFunction(unsigned int line, unsigned int col);
 
 	// a shared_ptr with a ptr of 0 means void
-	void setReturnType(std::shared_ptr<Type> returnType);
-	void addArg(std::shared_ptr<Type> argType);
+	void setReturnType(std::shared_ptr<SymbolRef> returnType);
+	void addArg(std::shared_ptr<SymbolRef> argType);
 
-	const std::shared_ptr<Type> getReturnType() const throw();
-	const std::vector<std::shared_ptr<Type>> & getArgTypes() const throw();
+	const std::shared_ptr<SymbolRef> getReturnType() const throw();
+	const std::vector<std::shared_ptr<SymbolRef>> & getArgTypes() const throw();
 
 	virtual bool equals(const Type &type) const throw();
 	virtual bool canAssignTo(const Type &other) const throw();
 
 private:
-	std::shared_ptr<Type> returnType;
-	std::vector<std::shared_ptr<Type>> argTypes;
+	std::shared_ptr<SymbolRef> returnType;
+	std::vector<std::shared_ptr<SymbolRef>> argTypes;
 };
 
 }

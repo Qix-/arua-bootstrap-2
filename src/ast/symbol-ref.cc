@@ -18,5 +18,9 @@ const shared_ptr<Symbol> SymbolRef::getSymbol() const throw() {
 }
 
 SymbolType SymbolRef::getSymbolType() const throw() {
-	return this->symCtx->getSymbolType(*this->symbol);
+	return this->symCtx->getSymbolType(this->symbol);
+}
+
+const shared_ptr<Type> SymbolRef::resolveType() const throw() {
+	return this->symCtx->resolveType(this->symbol);
 }

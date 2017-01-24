@@ -3,18 +3,24 @@
 using namespace arua;
 using namespace std;
 
-TypeArray::TypeArray(unsigned int line, unsigned int col, std::shared_ptr<Type> innerType)
+TypeArray::TypeArray(unsigned int line, unsigned int col, std::shared_ptr<SymbolRef> innerType, unsigned int depth)
 		: Type(line, col, PrimitiveType::ARRAY)
-		, innerType(innerType) {
+		, innerType(innerType)
+		, depth(depth) {
 }
 
-const shared_ptr<Type> TypeArray::getInnerType() const throw() {
+const shared_ptr<SymbolRef> TypeArray::getInnerType() const throw() {
 	return this->innerType;
 }
 
 bool TypeArray::equals(const Type &other) const throw() {
+	// as always, make sure the internal symbolrefs are indeed types.
+	// this should be done in a check prior to this method being called, but if you're
+	// getting weird segfaults this is probably why.
+
 	return other.getPrimitiveType() == PrimitiveType::ARRAY
-		&& ((TypeArray *)&other)->innerType->equals(*this->innerType);
+		&& ((TypeArray *)&other)->depth == this->depth
+		&& ((TypeArray *)&other)->innerType->resolveType()->equals(*this->innerType->resolveType());
 }
 
 bool TypeArray::canAssignTo(const Type &other) const throw() {
