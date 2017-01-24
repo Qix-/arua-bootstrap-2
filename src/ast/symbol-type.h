@@ -5,7 +5,6 @@
 namespace arua {
 
 enum class SymbolType {
-	INVALID,
 	TYPE,
 	ALIAS,
 	CTXREF,

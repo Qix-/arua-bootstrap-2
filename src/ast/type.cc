@@ -3,7 +3,8 @@
 using namespace arua;
 
 Type::Type(PrimitiveType primType)
-		: primType(primType) {
+		: Target(TargetType::TYPE)
+		, primType(primType) {
 }
 
 PrimitiveType Type::getPrimitiveType() const throw() {

@@ -4,7 +4,8 @@ using namespace arua;
 using namespace std;
 
 SymbolIndirect::SymbolIndirect(shared_ptr<SymbolContext> symCtx)
-		: Symbol(symCtx) {
+		: Symbol(symCtx)
+		, Target(TargetType::SYMBOL) {
 }
 
 unsigned int SymbolIndirect::getLine() const throw() {

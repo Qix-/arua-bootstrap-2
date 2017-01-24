@@ -16,6 +16,8 @@ public:
 	virtual unsigned int getLine() const throw();
 	virtual unsigned int getColumnStart() const throw();
 	virtual unsigned int getColumnEnd() const throw();
+
+	const std::shared_ptr<Identifier> getIdentifier() const throw();
 private:
 	std::shared_ptr<Identifier> identifier;
 };

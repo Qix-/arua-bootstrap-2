@@ -8,7 +8,6 @@ SymbolDirect::SymbolDirect(shared_ptr<SymbolContext> symCtx, shared_ptr<Identifi
 		, identifier(identifier) {
 }
 
-
 unsigned int SymbolDirect::getLine() const throw() {
 	return this->identifier->getLine();
 }
@@ -19,4 +18,8 @@ unsigned int SymbolDirect::getColumnStart() const throw() {
 
 unsigned int SymbolDirect::getColumnEnd() const throw() {
 	return this->identifier->getColumnEnd();
+}
+
+const shared_ptr<Identifier> SymbolDirect::getIdentifier() const throw() {
+	return this->identifier;
 }

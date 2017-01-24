@@ -17,6 +17,7 @@ SRC := \
 	ast/token-simple.cc \
 	ast/identifier.cc \
 	ast/type-symbol.cc \
+	ast/target.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

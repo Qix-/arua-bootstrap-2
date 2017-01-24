@@ -1,92 +1,85 @@
 #include <iostream> // XXX remove this when error reporting is formalized
 
+#include "symbol.h"
+#include "symbol-direct.h"
+#include "symbol-indirect.h"
 #include "symbol-context.h"
-#include "symbol-ref.h"
 
 using namespace arua;
 using namespace std;
 
-SymbolEntryBase::SymbolEntryBase(SymbolType type)
-		: type(type) {
+SymbolEntry::SymbolEntry(SymbolType type, const shared_ptr<SymbolVariant> value)
+		: type(type)
+		, value(value) {
 }
 
 SymbolContext::SymbolContext(shared_ptr<SymbolContext> parent)
 		: parent(parent) {
 }
 
-// TODO string -> Identifier
-void SymbolContext::addType(string name, shared_ptr<Type> type) throw() {
+void SymbolContext::addType(shared_ptr<Identifier> name, shared_ptr<Type> type) throw() {
 	if (!this->assertDoesntExist(name)) {
 		// don't add the new type; it just becomes an invalid type after this if used improperly.
 		return;
 	}
 
-	this->symbols[name] = shared_ptr<SymbolEntry<Type>>(new SymbolEntry<Type>(SymbolType::TYPE, type));
+	this->symbols[name->getIdentifier()] = shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::TYPE, type));
 }
 
-// TODO string -> Identifier
-void SymbolContext::addAlias(string name, shared_ptr<SymbolRef> symRef) throw() {
+void SymbolContext::addAlias(shared_ptr<Identifier> name, shared_ptr<Target> target) throw() {
 	if (!this->assertDoesntExist(name)) {
 		// don't add the new type; it just becomes an invalid type after this if used improperly.
 		return;
 	}
 
-	this->symbols[name] = shared_ptr<SymbolEntry<SymbolRef>>(new SymbolEntry<SymbolRef>(SymbolType::ALIAS, symRef));
+	this->symbols[name->getIdentifier()] = shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::ALIAS, target));
 }
 
-// TODO string -> Identifier
-void SymbolContext::addRef(string name, shared_ptr<SymbolContext> symCtx) throw() {
+void SymbolContext::addRef(shared_ptr<Identifier> name, shared_ptr<SymbolContext> symCtx) throw() {
 	if (!this->assertDoesntExist(name)) {
 		// don't add the new type; it just becomes an invalid type after this if used improperly.
 		return;
 	}
 
-	this->symbols[name] = shared_ptr<SymbolEntry<SymbolContext>>(new SymbolEntry<SymbolContext>(SymbolType::ALIAS, symCtx));
+	this->symbols[name->getIdentifier()] = shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::CTXREF, symCtx));
 }
 
-shared_ptr<SymbolEntryBase> SymbolContext::resolveSymbolEntry(string name) const throw() {
+shared_ptr<SymbolEntry> SymbolContext::resolveSymbolEntry(shared_ptr<Identifier> name) const throw() {
 	// resolve aliases
-	auto entry = this->symbols.find(name);
+	auto entry = this->symbols.find(name->getIdentifier());
 	if (entry == this->symbols.cend()) {
-		return shared_ptr<SymbolEntryBase>(new SymbolEntryBase(SymbolType::INVALID));
-	}
-
-	switch (entry->second->type) {
-	case SymbolType::TYPE:
-		return entry->second;
-	case SymbolType::CTXREF:
-		return entry->second;
-	case SymbolType::ALIAS: {
-		// further resolve
-		auto alias = static_pointer_cast<SymbolEntry<SymbolRef>>(entry->second)->value;
-		auto aliasSym = alias->resolve();
-		return aliasSym->getSymbolContext()->resolveSymbolEntry(aliasSym->getIdentifier());
-	}
-	default:
 		if (this->parent) {
 			return this->parent->resolveSymbolEntry(name);
 		}
 
-		// hopefully never hits here.
-		// TODO pass to error handler
-		// TODO replace with identifier line/col when I get identifiers in
-		cerr << "WARNING: symbol '" << name << "' somehow defined as invalid type";// at "
-//			<< name->getLine() << ":" << name->getColumn() << endl;
-		return shared_ptr<SymbolEntryBase>(new SymbolEntryBase(SymbolType::INVALID));
+		return nullptr;
+	}
+
+	switch (entry->second->type) {
+	case SymbolType::TYPE:
+	case SymbolType::CTXREF:
+		return entry->second;
+	case SymbolType::ALIAS: {
+		// further resolve
+		auto target = static_pointer_cast<Target>(entry->second->value);
+
+		switch (target->getTargetType()) {
+		case TargetType::SYMBOL: {
+			auto resolved = static_pointer_cast<SymbolIndirect>(target)->resolve();
+			return resolved->getContext()->resolveSymbolEntry(resolved->getIdentifier());
+		}
+		case TargetType::TYPE:
+			return shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::TYPE, static_pointer_cast<Type>(target)));
+		}
+	}
 	}
 }
 
-// TODO string -> Identifier
-bool SymbolContext::assertDoesntExist(string name) const throw() {
-	shared_ptr<SymbolEntryBase> existingSymbol = this->resolveSymbolEntry(name);
-	if (existingSymbol->type != SymbolType::INVALID) {
+bool SymbolContext::assertDoesntExist(shared_ptr<Identifier> name) const throw() {
+	shared_ptr<SymbolEntry> existingSymbol = this->resolveSymbolEntry(name);
+	if (existingSymbol) {
 		// TODO notify an error handler
-		// TODO replace with full line/col when Identifiers are added
-		cerr << "duplicate symbol '" << name << "'" << endl;// at " << name->getLine() << ":" << name->getColumn()
-			// << " (originally declared at "
-			// << existingSymbol->symbol->getLine() << ":" << existingSymbol->symbol->getColumn()
-			// << ")" << endl;
-
+		cerr << "duplicate symbol '" << name->getIdentifier() << "' at " << name->getLine() << ":" << name->getColumnStart() << endl;
 		return false;
 	}
 
