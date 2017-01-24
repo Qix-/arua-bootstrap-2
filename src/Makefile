@@ -5,6 +5,7 @@ RE2C := ../ext/re2c/re2c/re2c
 SRC := \
 	cli.cc \
 	lexer.cc.re \
+	ast/module.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

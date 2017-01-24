@@ -6,6 +6,7 @@
 
 #include "lexer.h"
 
+using namespace arua;
 using namespace std;
 
 enum arua_abt {
@@ -264,9 +265,11 @@ void print_highlighted(input &in) {
 	cerr << "\x1b[m";
 }
 
-// TODO change void to an AST tree result.
-void arua::lex_file(string &filename) {
+shared_ptr<Module> arua::lex_file(string &filename) {
 	input in(filename);
 	lex_input(in);
 	print_highlighted(in);
+
+	shared_ptr<Module> module(new Module(filename));
+	return module;
 }
