@@ -6,18 +6,12 @@
 #include <string>
 #include <unordered_map>
 
+#include "symbol-type.h"
 #include "type.h"
 
 namespace arua {
 
 class SymbolRef;
-
-enum class SymbolType {
-	INVALID,
-	TYPE,
-	ALIAS,
-	CTXREF,
-};
 
 struct SymbolEntryBase {
 	SymbolEntryBase(SymbolType type);
