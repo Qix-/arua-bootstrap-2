@@ -10,3 +10,7 @@ Type::Type(unsigned int line, unsigned int col, PrimitiveType primType)
 PrimitiveType Type::getPrimitiveType() const throw() {
 	return this->primType;
 }
+
+bool Type::operator ==(const Type &other) const {
+	return this->equals(other);
+}

@@ -8,6 +8,7 @@ SRC := \
 	ast/module.cc \
 	ast/token.cc \
 	ast/type.cc \
+	ast/type-scalar.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

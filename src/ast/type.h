@@ -24,6 +24,8 @@ public:
 	// ThisType = OtherType -- possible?
 	virtual bool canAssignTo(const Type &other) const throw() = 0;
 
+	bool operator ==(const Type &other) const;
+
 private:
 	PrimitiveType primType;
 };
