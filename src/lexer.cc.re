@@ -50,6 +50,8 @@ enum arua_abt {
 	ABT_ON,
 	ABT_BE,
 	ABT_TRAIT,
+	ABT_TYPEDEF,
+	ABT_ALIAS,
 };
 
 struct token {
@@ -221,6 +223,8 @@ void lex_input(input &in) {
 		"on" { in.push(ABT_ON); continue; }
 		"be" { in.push(ABT_BE); continue; }
 		"trait" { in.push(ABT_TRAIT); continue; }
+		"type" { in.push(ABT_TYPEDEF); continue; }
+		"alias" { in.push(ABT_ALIAS); continue; }
 
 		"(" { in.push(ABT_OPAREN); continue; }
 		")" { in.push(ABT_CPAREN); continue; }
@@ -270,6 +274,8 @@ void print_token(const shared_ptr<token> &tkn) {
 	case ABT_ON: cerr << "\x1b[36;1mon\x1b[m"; break;
 	case ABT_BE: cerr << "\x1b[36;1mbe\x1b[m"; break;
 	case ABT_TRAIT: cerr << "\x1b[36;1mtrait\x1b[m"; break;
+	case ABT_TYPEDEF: cerr << "\x1b[36;1mtype\x1b[m"; break;
+	case ABT_ALIAS: cerr << "\x1b[36;1malias\x1b[m"; break;
 	case ABT_COMMA: cerr << "\x1b[2m,\x1b[m"; break;
 	case ABT_PLUS: cerr << "\x1b[2m+\x1b[m"; break;
 	case ABT_MINUS: cerr << "\x1b[2m-\x1b[m"; break;
