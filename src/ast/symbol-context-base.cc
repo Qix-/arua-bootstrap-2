@@ -66,11 +66,15 @@ shared_ptr<SymbolEntryBase> SymbolContextBase::resolveSymbolEntry(shared_ptr<Sym
 		return alias->getSymbolContext()->resolveSymbolEntry(alias->getSymbol());
 	}
 	default:
-		// TODO hopefully never hits here.
-		cerr << "WARNING: symbol '" << name->getLabel() << "' somehow defined as invalid type at "
-			<< name->getLine() << ":" << name->getColumn() << endl;
-		return shared_ptr<SymbolEntryBase>(new SymbolEntryBase(SymbolType::INVALID, name));
+		return this->resolveNextSymbolEntry(name);
 	}
+}
+
+shared_ptr<SymbolEntryBase> SymbolContextBase::resolveNextSymbolEntry(shared_ptr<Symbol> name) const throw() {
+	// TODO hopefully never hits here.
+	cerr << "WARNING: symbol '" << name->getLabel() << "' somehow defined as invalid type at "
+		<< name->getLine() << ":" << name->getColumn() << endl;
+	return shared_ptr<SymbolEntryBase>(new SymbolEntryBase(SymbolType::INVALID, name));
 }
 
 bool SymbolContextBase::assertDoesntExist(const std::shared_ptr<Symbol> name) const throw() {

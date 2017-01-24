@@ -15,6 +15,7 @@ SRC := \
 	ast/type-def.cc \
 	ast/symbol-ref.cc \
 	ast/symbol-context-base.cc \
+	ast/symbol-context.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

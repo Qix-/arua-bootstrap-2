@@ -41,7 +41,10 @@ struct SymbolEntry : public SymbolEntryBase {
 };
 
 class SymbolContextBase {
+	friend class SymbolContext;
 public:
+	virtual ~SymbolContextBase() = default;
+
 	// returns SymbolType::INVALID if the given symbol isn't found.
 	SymbolType getSymbolType(const std::shared_ptr<Symbol> name) const throw();
 
@@ -55,6 +58,7 @@ public:
 
 protected:
 	std::shared_ptr<SymbolEntryBase> resolveSymbolEntry(std::shared_ptr<Symbol> name) const throw();
+	virtual std::shared_ptr<SymbolEntryBase> resolveNextSymbolEntry(std::shared_ptr<Symbol> name) const throw();
 
 private:
 	bool assertDoesntExist(const std::shared_ptr<Symbol> name) const throw();
