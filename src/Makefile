@@ -6,6 +6,7 @@ SRC := \
 	cli.cc \
 	lexer.cc.re \
 	ast/module.cc \
+	ast/token.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
