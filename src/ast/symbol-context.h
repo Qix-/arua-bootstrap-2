@@ -4,10 +4,8 @@
 
 #include <memory>
 #include <string>
-#include <stdexcept>
 #include <unordered_map>
 
-#include "symbol.h"
 #include "type.h"
 
 namespace arua {
@@ -18,13 +16,13 @@ enum class SymbolType {
 	INVALID,
 	TYPE,
 	ALIAS,
+	CTXREF,
 };
 
 struct SymbolEntryBase {
-	SymbolEntryBase(SymbolType type, std::shared_ptr<Symbol> symbol);
+	SymbolEntryBase(SymbolType type);
 
 	// TODO include originating declaration statment reference
-	const std::shared_ptr<Symbol> symbol;
 	const SymbolType type;
 };
 
@@ -32,8 +30,8 @@ template <typename TSymbol>
 struct SymbolEntry : public SymbolEntryBase {
 	typedef TSymbol Type;
 
-	SymbolEntry(SymbolType type, const std::shared_ptr<Symbol> symbol, const std::shared_ptr<TSymbol> value)
-			: SymbolEntryBase(type, symbol)
+	SymbolEntry(SymbolType type, const std::shared_ptr<TSymbol> value)
+			: SymbolEntryBase(type)
 			, value(value) {
 	}
 
@@ -41,27 +39,23 @@ struct SymbolEntry : public SymbolEntryBase {
 };
 
 class SymbolContext {
-	friend class SymbolContext;
+	friend class Symbol;
 public:
 	SymbolContext(std::shared_ptr<SymbolContext> parent = nullptr);
 	virtual ~SymbolContext() = default;
 
-	// returns SymbolType::INVALID if the given symbol isn't found.
-	SymbolType getSymbolType(const std::shared_ptr<Symbol> name) const throw();
-
 	// TODO accept an error handler for duplicate symbols
-	void addType(std::shared_ptr<Symbol> name, std::shared_ptr<Type> type) throw();
+	void addType(std::string name, std::shared_ptr<Type> type) throw();
 	// TODO accept an error handler for duplicate symbols
-	void addAlias(std::shared_ptr<Symbol> name, std::shared_ptr<SymbolRef> symRef) throw();
-
-	// These throw if their respective types are not correct; make sure to call getSymbolType() first!
-	std::shared_ptr<Type> resolveType(std::shared_ptr<Symbol> name) const throw(std::runtime_error);
+	void addAlias(std::string name, std::shared_ptr<SymbolRef> symRef) throw();
+	// TODO accept an error handler for duplicate symbols
+	void addRef(std::string name, std::shared_ptr<SymbolContext> symCtx) throw();
 
 protected:
-	std::shared_ptr<SymbolEntryBase> resolveSymbolEntry(std::shared_ptr<Symbol> name) const throw();
+	std::shared_ptr<SymbolEntryBase> resolveSymbolEntry(std::string name) const throw();
 
 private:
-	bool assertDoesntExist(const std::shared_ptr<Symbol> name) const throw();
+	bool assertDoesntExist(std::string name) const throw();
 
 	std::shared_ptr<SymbolContext> parent;
 

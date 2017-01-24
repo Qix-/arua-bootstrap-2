@@ -3,16 +3,37 @@
 using namespace arua;
 using namespace std;
 
-Symbol::Symbol(unsigned int line, unsigned int col, string label, shared_ptr<SymbolContext> symCtx)
-		: Token(line, col)
-		, label(label)
+Symbol::Symbol(string identifier, shared_ptr<SymbolContext> symCtx)
+		: identifier(identifier)
 		, symCtx(symCtx) {
 }
 
-string Symbol::getLabel() const throw () {
-	return this->label;
+string Symbol::getIdentifier() const throw () {
+	return this->identifier;
 }
 
 shared_ptr<SymbolContext> Symbol::getSymbolContext() const throw() {
 	return this->symCtx;
+}
+
+SymbolType Symbol::resolveSymbolType() const throw() {
+	return this->symCtx->resolveSymbolEntry(this->identifier)->type;
+}
+
+const shared_ptr<Type> Symbol::resolveType() const throw() {
+	auto entry = this->symCtx->resolveSymbolEntry(this->identifier);
+	if (entry->type != SymbolType::TYPE) {
+		return nullptr;
+	}
+
+	return static_pointer_cast<SymbolEntry<Type>>(entry)->value;
+}
+
+const shared_ptr<SymbolContext> Symbol::resolveContext() const throw() {
+	auto entry = this->symCtx->resolveSymbolEntry(this->identifier);
+	if (entry->type != SymbolType::CTXREF) {
+		return nullptr;
+	}
+
+	return static_pointer_cast<SymbolEntry<SymbolContext>>(entry)->value;
 }
