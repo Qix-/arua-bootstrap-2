@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cerrno>
 #include <cstring>
+#include <functional>
 #include <iostream> // XXX DEBUG
 #include <memory>
 #include <vector>
@@ -8,6 +9,7 @@
 #include "ast/module.h"
 #include "ast/symbol-direct.h"
 #include "ast/symbol-indirect.h"
+#include "ast/target.h"
 #include "ast/type.h"
 #include "ast/type-array.h"
 #include "ast/type-scalar.h"
@@ -389,7 +391,8 @@ bool parse_identifier(tokenitr &titr, shared_ptr<Identifier> &id) {
 
 bool parse_type(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx);
 
-bool parse_type_array(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx) {
+template <typename TType>
+bool parse_type_array(tokenitr &titr, shared_ptr<TType> &type, shared_ptr<SymbolContext> symCtx) {
 	unsigned int depth = 0;
 
 	while (expect(titr, ABT_OBRACKET)) {
@@ -407,7 +410,8 @@ bool parse_type_array(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolC
 	return true;
 }
 
-bool parse_type_symbol_or_scalar(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx) {
+template <typename TType>
+bool parse_type_symbol_or_scalar(tokenitr &titr, shared_ptr<TType> &type, shared_ptr<SymbolContext> symCtx, function<TType*(shared_ptr<Identifier>)> symbol_consumer) {
 	shared_ptr<SymbolIndirect> indirect(new SymbolIndirect(symCtx));
 
 	// get first identifier
@@ -454,25 +458,69 @@ bool parse_type_symbol_or_scalar(tokenitr &titr, shared_ptr<Type> &type, shared_
 	}
 
 	notAScalar:
-	type.reset(new TypeSymbol(shared_ptr<Symbol>(new SymbolDirect(symCtx, firstId))));
+	type.reset(symbol_consumer(firstId));
 	return true;
 }
 
 bool parse_type(tokenitr &titr, shared_ptr<Type> &type, shared_ptr<SymbolContext> symCtx) {
-	// parse arrays
 	if ((*titr)->type == ABT_OBRACKET) {
 		return parse_type_array(titr, type, symCtx);
 	}
 
-	// parse functions
 	if ((*titr)->type == ABT_FN) {
 		// TODO not entirely sure about this yet.
-		cerr << "NOTICE (fatal): function type (outside of declarations) are not yes supported (at "
+		cerr << "NOTICE (fatal): function typedefs (outside of declarations) are not yet supported (at "
 			<< (*titr)->line << ":" << (*titr)->col_start << ")" << endl;
 		return false;
 	}
 
-	return parse_type_symbol_or_scalar(titr, type, symCtx);
+	return parse_type_symbol_or_scalar<Type>(titr, type, symCtx, [symCtx](shared_ptr<Identifier> firstId) -> Type* {
+		return new TypeSymbol(shared_ptr<Symbol>(new SymbolDirect(symCtx, firstId)));
+	});
+}
+
+bool parse_target(tokenitr &titr, shared_ptr<Target> &target, shared_ptr<SymbolContext> symCtx) {
+	if ((*titr)->type == ABT_OBRACKET) {
+		return parse_type_array(titr, target, symCtx);
+	}
+
+	if ((*titr)->type == ABT_FN) {
+		// TODO not entirely sure about this yet.
+		cerr << "NOTICE (fatal): function type aliases (outside of declarations) are not yet supported (at "
+			<< (*titr)->line << ":" << (*titr)->col_start << ")" << endl;
+		return false;
+	}
+
+	return parse_type_symbol_or_scalar<Target>(titr, target, symCtx, [symCtx](shared_ptr<Identifier> firstId) -> Target * {
+		auto si = new SymbolIndirect(symCtx);
+		si->addIdentifier(firstId);
+		return si;
+	});
+}
+
+bool parse_alias(tokenitr &titr, shared_ptr<Module> module) {
+	auto beginToken = *titr;
+
+	if (!expect(titr, ABT_ALIAS)) return unexpected(titr);
+	if (!parse_whitespace(titr)) return unexpected(titr);
+
+	shared_ptr<Target> target;
+	if (!parse_target(titr, target, module)) {
+		return false;
+	}
+
+	if (!parse_whitespace(titr)) return unexpected(titr);
+	if (!expect(titr, ABT_AS)) return unexpected(titr);
+	if (!parse_whitespace(titr)) return unexpected(titr);
+
+	shared_ptr<Identifier> name;
+	if (!parse_identifier(titr, name)) return false;
+
+	if (!expect(titr, ABT_NL)) return false;
+
+	module->addAlias(name, target);
+
+	return true;
 }
 
 bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
@@ -506,6 +554,9 @@ bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 		switch ((*titr)->type) {
 		case ABT_TYPEDEF:
 			if (!parse_typedef(titr, module)) return false;
+			break;
+		case ABT_ALIAS:
+			if (!parse_alias(titr, module)) return false;
 			break;
 		default:
 			return unexpected(titr);
