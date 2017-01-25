@@ -78,8 +78,6 @@ struct token_val : public token {
 	string val;
 };
 
-typedef vector<shared_ptr<token>>::const_iterator tokenitr;
-
 /*!re2c
 	re2c:define:YYCTYPE = "unsigned char";
 */
@@ -199,6 +197,43 @@ struct input_str : public input_base {
 			dst[i] = src[curPos];
 		}
 		return i;
+	}
+};
+
+typedef vector<shared_ptr<token>>::const_iterator tokenvecitr;
+
+struct tokenitr {
+	tokenvecitr &itr;
+
+	bool pub;
+
+	tokenitr(tokenvecitr &itr)
+			: itr(itr)
+			, pub(false) {
+	}
+
+	shared_ptr<token> operator *() const throw() {
+		return *itr;
+	}
+
+	tokenvecitr operator ++() throw() {
+		return ++itr;
+	}
+
+	tokenvecitr operator ++(int) throw() {
+		return itr++;
+	}
+
+	tokenvecitr operator --() throw() {
+		return --itr;
+	}
+
+	tokenvecitr operator --(int) throw() {
+		return itr--;
+	}
+
+	const shared_ptr<token> * operator ->() const throw() {
+		return &*itr;
 	}
 };
 
@@ -622,7 +657,8 @@ shared_ptr<Module> arua::parse_file(string filename) {
 	cerr << endl << endl;
 
 	shared_ptr<Module> module(new Module(filename));
-	tokenitr titr = in.tokens.cbegin();
+	tokenvecitr vitr = in.tokens.cbegin();
+	tokenitr titr(vitr);
 	return parse_module(titr, module) ? module : nullptr;
 }
 
@@ -631,6 +667,7 @@ shared_ptr<SymbolIndirect> arua::parse_symbol_indirect(string str, shared_ptr<Sy
 	lex_input(in);
 
 	shared_ptr<SymbolIndirect> symbol;
-	tokenitr titr = in.tokens.cbegin();
+	tokenvecitr vitr = in.tokens.cbegin();
+	tokenitr titr(vitr);
 	return parse_symbol_indirect(titr, symbol, symCtx) ? symbol : nullptr;
 }
