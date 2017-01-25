@@ -584,7 +584,7 @@ bool parse_alias(tokenitr &titr, shared_ptr<Module> module) {
 
 	if (!expect(titr, ABT_NL)) return false;
 
-	module->addAlias(name, target);
+	module->addAlias(name, target, titr.pub);
 
 	return true;
 }
@@ -609,8 +609,25 @@ bool parse_typedef(tokenitr &titr, shared_ptr<Module> module) {
 
 	if (!expect(titr, ABT_NL)) return false;
 
-	module->addType(name, baseType);
+	module->addType(name, baseType, titr.pub);
 
+	return true;
+}
+
+bool parse_pub(tokenitr &titr) {
+	if (!expect(titr, ABT_PUB)) return unexpected(titr);
+	if (!expect(titr, ABT_WS)) return unexpected(titr);
+
+	switch ((*titr)->type) {
+	case ABT_TYPEDEF:
+	case ABT_ALIAS:
+	case ABT_FN:
+		break;
+	default:
+		return unexpected(titr);
+	}
+
+	titr.pub = true;
 	return true;
 }
 
@@ -618,6 +635,11 @@ bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 	while ((*titr)->type != ABT_EOF) {
 		burn(titr);
 		switch ((*titr)->type) {
+		case ABT_EOF:
+			continue;
+		case ABT_PUB:
+			if (!parse_pub(titr)) return false;
+			continue;
 		case ABT_TYPEDEF:
 			if (!parse_typedef(titr, module)) return false;
 			break;
@@ -627,6 +649,9 @@ bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 		default:
 			return unexpected(titr);
 		}
+
+		// reset state
+		titr.pub = false;
 	}
 
 	return true;

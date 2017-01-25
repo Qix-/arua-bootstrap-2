@@ -1,0 +1,1 @@
+pub type i32 as foo
