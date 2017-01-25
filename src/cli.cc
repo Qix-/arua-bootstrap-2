@@ -23,12 +23,12 @@ void add_zone_path(const char *path, void *data, const xoptOption *option, bool 
 
 	filesystem::path fpath = path;
 	if (!fpath.exists()) {
-		*err = ("zone path does not exist: " + fpath.str()).c_str();
+		*err = strdup(("zone path does not exist: " + fpath.str()).c_str());
 		return;
 	}
 
 	if (!fpath.is_directory()) {
-		*err = ("zone path is not a directory: " + fpath.str()).c_str();
+		*err = strdup(("zone path is not a directory: " + fpath.str()).c_str());
 		return;
 	}
 
