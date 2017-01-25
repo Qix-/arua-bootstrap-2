@@ -415,7 +415,7 @@ inline bool expect(tokenitr &titr, arua_abt type) {
 bool parse_identifier(tokenitr &titr, shared_ptr<Identifier> &id) {
 	if ((*titr)->type != ABT_ID) return unexpected(titr);
 
-	id.reset(new Identifier((*titr)->line, (*titr)->col_start, ((token_val *)&*titr)->val));
+	id.reset(new Identifier((*titr)->line, (*titr)->col_start, ((token_val *)titr->get())->val));
 	++titr;
 	return true;
 }
