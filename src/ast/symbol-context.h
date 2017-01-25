@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "identifier.h"
 #include "symbol-type.h"
@@ -28,17 +29,18 @@ public:
 	virtual ~SymbolContext() = default;
 
 	// TODO accept an error handler for duplicate symbols
-	void addType(std::shared_ptr<Identifier> name, std::shared_ptr<Type> type) throw();
+	void addType(std::shared_ptr<Identifier> name, std::shared_ptr<Type> type, bool pub = false) throw();
 	// TODO accept an error handler for duplicate symbols
-	void addAlias(std::shared_ptr<Identifier> name, std::shared_ptr<Target> target) throw();
+	void addAlias(std::shared_ptr<Identifier> name, std::shared_ptr<Target> target, bool pub = false) throw();
 	// TODO accept an error handler for duplicate symbols
-	void addRef(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> symCtx) throw();
+	void addRef(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> symCtx, bool pub = false) throw();
 
 protected:
-	std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name) const throw();
+	std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> baseCtx) const throw();
 
 private:
 	bool assertDoesntExist(std::shared_ptr<Identifier> name) const throw();
+	bool isCtxChild(std::shared_ptr<SymbolContext> child) const throw();
 
 	std::shared_ptr<SymbolContext> parent;
 
@@ -46,6 +48,7 @@ private:
 	// we also use strings here since they have all of the hash/equality functionality we need
 	// to perform simple lookups.
 	std::unordered_map<std::string, std::shared_ptr<SymbolEntry>> symbols;
+	std::unordered_set<std::string> publicSymbols;
 };
 
 }

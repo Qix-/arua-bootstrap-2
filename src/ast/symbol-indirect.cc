@@ -53,12 +53,13 @@ shared_ptr<SymbolDirect> SymbolIndirect::resolve() const throw() {
 		return shared_ptr<SymbolDirect>(new SymbolDirect(this->getContext(), this->identifiers[0]));
 	}
 
+	auto lastCtx = this->getContext();
 	auto curCtx = this->getContext();
 	auto idItr = this->identifiers.cbegin();
 	auto idLast = this->identifiers.cend() - 1;
 
 	for (; idItr != idLast; ++idItr) {
-		auto resolved = curCtx->resolveSymbolEntry(*idItr);
+		auto resolved = curCtx->resolveSymbolEntry(*idItr, lastCtx);
 		if (resolved->type != SymbolType::CTXREF) {
 			// TODO hand off to error handler
 			cerr << "ERROR: identifier '" << (*idItr)->getIdentifier() << "' in indirect symbol does not refer to a symbol context at "
@@ -66,6 +67,7 @@ shared_ptr<SymbolDirect> SymbolIndirect::resolve() const throw() {
 			return nullptr;
 		}
 
+		lastCtx = curCtx;
 		curCtx = static_pointer_cast<SymbolContext>(resolved->value);
 	}
 

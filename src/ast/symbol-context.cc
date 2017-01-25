@@ -17,41 +17,57 @@ SymbolContext::SymbolContext(shared_ptr<SymbolContext> parent)
 		: parent(parent) {
 }
 
-void SymbolContext::addType(shared_ptr<Identifier> name, shared_ptr<Type> type) throw() {
+void SymbolContext::addType(shared_ptr<Identifier> name, shared_ptr<Type> type, bool pub) throw() {
 	if (!this->assertDoesntExist(name)) {
 		// don't add the new type; it just becomes an invalid type after this if used improperly.
 		return;
 	}
 
 	this->symbols[name->getIdentifier()] = shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::TYPE, type));
+
+	if (pub) {
+		this->publicSymbols.insert(name->getIdentifier());
+	}
 }
 
-void SymbolContext::addAlias(shared_ptr<Identifier> name, shared_ptr<Target> target) throw() {
+void SymbolContext::addAlias(shared_ptr<Identifier> name, shared_ptr<Target> target, bool pub) throw() {
 	if (!this->assertDoesntExist(name)) {
 		// don't add the new type; it just becomes an invalid type after this if used improperly.
 		return;
 	}
 
 	this->symbols[name->getIdentifier()] = shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::ALIAS, target));
+
+	if (pub) {
+		this->publicSymbols.insert(name->getIdentifier());
+	}
 }
 
-void SymbolContext::addRef(shared_ptr<Identifier> name, shared_ptr<SymbolContext> symCtx) throw() {
+void SymbolContext::addRef(shared_ptr<Identifier> name, shared_ptr<SymbolContext> symCtx, bool pub) throw() {
 	if (!this->assertDoesntExist(name)) {
 		// don't add the new type; it just becomes an invalid type after this if used improperly.
 		return;
 	}
 
 	this->symbols[name->getIdentifier()] = shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::CTXREF, symCtx));
+
+	if (pub) {
+		this->publicSymbols.insert(name->getIdentifier());
+	}
 }
 
-shared_ptr<SymbolEntry> SymbolContext::resolveSymbolEntry(shared_ptr<Identifier> name) const throw() {
+shared_ptr<SymbolEntry> SymbolContext::resolveSymbolEntry(shared_ptr<Identifier> name, shared_ptr<SymbolContext> baseCtx) const throw() {
 	// resolve aliases
 	auto entry = this->symbols.find(name->getIdentifier());
 	if (entry == this->symbols.cend()) {
 		if (this->parent) {
-			return this->parent->resolveSymbolEntry(name);
+			return this->parent->resolveSymbolEntry(name, baseCtx);
 		}
 
+		return nullptr;
+	}
+
+	if (!this->publicSymbols.count(name->getIdentifier()) && !this->isCtxChild(baseCtx)) {
 		return nullptr;
 	}
 
@@ -66,7 +82,10 @@ shared_ptr<SymbolEntry> SymbolContext::resolveSymbolEntry(shared_ptr<Identifier>
 		switch (target->getTargetType()) {
 		case TargetType::SYMBOL: {
 			auto resolved = static_pointer_cast<SymbolIndirect>(target)->resolve();
-			return resolved->getContext()->resolveSymbolEntry(resolved->getIdentifier());
+			if (!resolved) {
+				return nullptr;
+			}
+			return resolved->getContext()->resolveSymbolEntry(resolved->getIdentifier(), baseCtx);
 		}
 		case TargetType::TYPE:
 			return shared_ptr<SymbolEntry>(new SymbolEntry(SymbolType::TYPE, static_pointer_cast<Type>(target)));
@@ -75,9 +94,21 @@ shared_ptr<SymbolEntry> SymbolContext::resolveSymbolEntry(shared_ptr<Identifier>
 	}
 }
 
+bool SymbolContext::isCtxChild(shared_ptr<SymbolContext> child) const throw() {
+	while (child->parent) {
+		if (child->parent.get() == this) {
+			return true;
+		}
+
+		child = child->parent;
+	}
+
+	return false;
+}
+
 bool SymbolContext::assertDoesntExist(shared_ptr<Identifier> name) const throw() {
-	shared_ptr<SymbolEntry> existingSymbol = this->resolveSymbolEntry(name);
-	if (existingSymbol) {
+	auto existingSymbol = this->symbols.find(name->getIdentifier());
+	if (existingSymbol != this->symbols.end()) {
 		// TODO notify an error handler
 		cerr << "duplicate symbol '" << name->getIdentifier() << "' at " << name->getLine() << ":" << name->getColumnStart() << endl;
 		return false;

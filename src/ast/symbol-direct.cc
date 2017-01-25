@@ -30,9 +30,9 @@ shared_ptr<SymbolDirect> SymbolDirect::resolve() const throw() {
 }
 
 bool SymbolDirect::is(SymbolType type) const throw() {
-	return this->getContext()->resolveSymbolEntry(this->identifier)->type == type;
+	return this->getContext()->resolveSymbolEntry(this->identifier, this->getContext())->type == type;
 }
 
 shared_ptr<Type> SymbolDirect::asType() const throw() {
-	return static_pointer_cast<Type>(this->getContext()->resolveSymbolEntry(this->identifier)->value);
+	return static_pointer_cast<Type>(this->getContext()->resolveSymbolEntry(this->identifier, this->getContext())->value);
 }
