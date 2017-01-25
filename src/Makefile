@@ -1,10 +1,11 @@
+.SECONDARY:
 .PHONY: all clean
 
 RE2C := ../ext/re2c/re2c/re2c
 
 SRC := \
 	cli.cc \
-	lexer.cc.re \
+	parser.cc.re \
 	ast/module.cc \
 	ast/type.cc \
 	ast/type-scalar.cc \

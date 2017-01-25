@@ -5,7 +5,7 @@
 #include "ast/symbol-context-global-zone.h"
 #include "ast/symbol-indirect.h"
 #include "cli.h"
-#include "lexer.h"
+#include "parser.h"
 
 using namespace arua;
 using namespace std;

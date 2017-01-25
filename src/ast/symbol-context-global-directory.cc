@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../lexer.h"
+#include "../parser.h"
 #include "symbol-context-global-directory.h"
 
 using namespace arua;

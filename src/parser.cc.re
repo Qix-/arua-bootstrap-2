@@ -14,7 +14,7 @@
 #include "ast/type-array.h"
 #include "ast/type-scalar.h"
 #include "ast/type-symbol.h"
-#include "lexer.h"
+#include "parser.h"
 
 // just used in the column math.
 // in the final compiler, we will be able to specify this to get accurate columns.
