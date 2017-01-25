@@ -56,7 +56,7 @@ void SymbolContext::addRef(shared_ptr<Identifier> name, shared_ptr<SymbolContext
 	}
 }
 
-shared_ptr<SymbolEntry> SymbolContext::resolveSymbolEntry(shared_ptr<Identifier> name, shared_ptr<SymbolContext> baseCtx) const throw() {
+shared_ptr<SymbolEntry> SymbolContext::resolveSymbolEntry(shared_ptr<Identifier> name, shared_ptr<SymbolContext> baseCtx) throw() {
 	// resolve aliases
 	auto entry = this->symbols.find(name->getIdentifier());
 	if (entry == this->symbols.cend()) {

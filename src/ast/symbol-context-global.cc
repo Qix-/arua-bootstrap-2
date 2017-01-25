@@ -43,7 +43,7 @@ void SymbolContextGlobal::addRef(string name, shared_ptr<SymbolContext> symCtx) 
 	this->publicSymbols.insert(name);
 }
 
-shared_ptr<SymbolEntry> SymbolContextGlobal::resolveSymbolEntry(shared_ptr<Identifier> name, shared_ptr<SymbolContext> baseCtx) const throw() {
+shared_ptr<SymbolEntry> SymbolContextGlobal::resolveSymbolEntry(shared_ptr<Identifier> name, shared_ptr<SymbolContext> baseCtx) throw() {
 	(void) baseCtx; // not needed as everything within this context is public by design.
-	return this->resolveSymbolEntry(name);
+	return this->resolveSymbolEntry(name->getIdentifier());
 }

@@ -8,7 +8,7 @@
 #include "ast/module.h"
 
 namespace arua {
-	std::shared_ptr<Module> lex_file(std::string &filename);
+	std::shared_ptr<Module> lex_file(std::string filename);
 }
 
 #endif

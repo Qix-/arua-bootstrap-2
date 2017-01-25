@@ -17,10 +17,10 @@ public:
 	virtual void addRef(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> symCtx, bool pub = false) throw();
 	virtual void addRef(std::string name, std::shared_ptr<SymbolContext> symCtx) throw();
 
-	virtual std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> baseCtx) const throw();
+	virtual std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> baseCtx) throw();
 
 protected:
-	virtual std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name) const throw() = 0;
+	virtual std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::string name) throw() = 0;
 };
 
 }

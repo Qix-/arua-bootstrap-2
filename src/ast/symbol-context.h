@@ -24,7 +24,6 @@ struct SymbolEntry {
 class SymbolContext : public SymbolVariant {
 	friend class SymbolIndirect;
 	friend class SymbolDirect;
-	friend class SymbolContextGlobal;
 public:
 	SymbolContext(std::shared_ptr<SymbolContext> parent = nullptr);
 	virtual ~SymbolContext() = default;
@@ -37,19 +36,19 @@ public:
 	virtual void addRef(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> symCtx, bool pub = false) throw();
 
 protected:
-	virtual std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> baseCtx) const throw();
-
-private:
-	bool assertDoesntExist(std::shared_ptr<Identifier> name) const throw();
-	bool isCtxChild(std::shared_ptr<SymbolContext> child) const throw();
-
-	std::shared_ptr<SymbolContext> parent;
+	virtual std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> baseCtx) throw();
 
 	// we allow all types instead of just typedefs here since aliases just add a mapping to a type.
 	// we also use strings here since they have all of the hash/equality functionality we need
 	// to perform simple lookups.
 	std::unordered_map<std::string, std::shared_ptr<SymbolEntry>> symbols;
 	std::unordered_set<std::string> publicSymbols;
+
+private:
+	bool assertDoesntExist(std::shared_ptr<Identifier> name) const throw();
+	bool isCtxChild(std::shared_ptr<SymbolContext> child) const throw();
+
+	std::shared_ptr<SymbolContext> parent;
 };
 
 }

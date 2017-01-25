@@ -566,7 +566,7 @@ bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 	return true;
 }
 
-shared_ptr<Module> arua::lex_file(string &filename) {
+shared_ptr<Module> arua::lex_file(string filename) {
 	input in(filename);
 	lex_input(in);
 	print_highlighted(in);
