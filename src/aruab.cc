@@ -33,7 +33,7 @@ int protected_main(int argc, const char *argv[]) {
 	// resolve it!
 	auto mainSym = mainSymbol->resolve();
 	if (!mainSym) {
-		cerr << "aruab: failed to resolve main function: " << cfg.mainSymbol << endl;
+		cerr << "aruab: fatal error: failed to resolve main function: " << cfg.mainSymbol << endl;
 		return 1;
 	}
 
