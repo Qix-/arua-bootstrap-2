@@ -9,6 +9,7 @@
 namespace arua {
 
 class SymbolContextGlobal : public SymbolContext {
+	friend class SymbolContextGlobalZone;
 public:
 	virtual ~SymbolContextGlobal() = default;
 

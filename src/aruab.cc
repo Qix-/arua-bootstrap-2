@@ -1,6 +1,9 @@
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 
+#include "ast/symbol-context-global-zone.h"
+#include "ast/symbol-indirect.h"
 #include "cli.h"
 #include "lexer.h"
 
@@ -16,6 +19,22 @@ int protected_main(int argc, const char *argv[]) {
 	if (cfg.zones.size() == 0) {
 		cerr << "aruab: notice: no zones specified; defaulting to current directory" << endl;
 		cfg.zones.insert(filesystem::path::getcwd());
+	}
+
+	shared_ptr<SymbolContextGlobalZone> globalZone(new SymbolContextGlobalZone(cfg.zones));
+
+	// parse the main identifier
+	shared_ptr<SymbolIndirect> mainSymbol = arua::parse_symbol_indirect(cfg.mainSymbol, globalZone);
+	if (!mainSymbol) {
+		cerr << "aruab: fatal error: invalid main symbol: " << cfg.mainSymbol << endl;
+		return 1;
+	}
+
+	// resolve it!
+	auto mainSym = mainSymbol->resolve();
+	if (!mainSym) {
+		cerr << "aruab: failed to resolve main function: " << cfg.mainSymbol << endl;
+		return 1;
 	}
 
 	return 0;

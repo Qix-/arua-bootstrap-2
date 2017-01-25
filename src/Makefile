@@ -20,6 +20,7 @@ SRC := \
 	ast/target.cc \
 	ast/symbol-context-global.cc \
 	ast/symbol-context-global-directory.cc \
+	ast/symbol-context-global-zone.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

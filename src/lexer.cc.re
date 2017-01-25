@@ -88,11 +88,11 @@ typedef vector<shared_ptr<token>>::const_iterator tokenitr;
 static const size_t SIZE = 64 * 1024;
 
 // shamelessly copied from http://re2c.org/examples/example_07.html
-// modified to be a bit more contained.
+// modified to be a bit more contained.lex
 // I chose to keep the old cstdio fopen()/fread()/etc functions here
 // instead of streams since they seem to be lacking a "read up to this many
 // bytes and return the number of bytes you /actually/ read" function.
-struct input {
+struct input_base {
 	unsigned char buf[SIZE + YYMAXFILL];
 	unsigned char *lim;
 	unsigned char *cur;
@@ -103,9 +103,7 @@ struct input {
 	unsigned int line;
 	unsigned int col;
 
-	FILE *const file;
-
-	input(string &filename)
+	input_base()
 			: buf()
 			, lim(buf + SIZE)
 			, cur(lim)
@@ -113,11 +111,21 @@ struct input {
 			, tok(lim)
 			, eof(false)
 			, line(1)
-			, col(1)
-			, file(fopen(filename.c_str(), "rb")) {
-		if (!file) {
-			throw runtime_error("could not open file for reading: " + filename + "(" + strerror(errno) + ")");
+			, col(1) {
+	}
+
+	void push(token *tkn) {
+		tkn->line = this->line;
+		tkn->col_start = this->col;
+		if (tkn->type == ABT_NL) {
+			this->col = 1;
+			++this->line;
+			tkn->col_end = tkn->col_start;
+		} else {
+			this->col += this->cur - this->tok;
+			tkn->col_end = this->col - 1;
 		}
+		this->tokens.push_back(shared_ptr<token>(tkn));
 	}
 
 	bool fill(size_t need) {
@@ -137,7 +145,7 @@ struct input {
 		mar -= free;
 		tok -= free;
 
-		lim += fread(lim, 1, free, file);
+		lim += this->read(lim, free);
 
 		if (lim < buf + SIZE) {
 			eof = true;
@@ -148,19 +156,7 @@ struct input {
 		return true;
 	}
 
-	void push(token *tkn) {
-		tkn->line = this->line;
-		tkn->col_start = this->col;
-		if (tkn->type == ABT_NL) {
-			this->col = 1;
-			++this->line;
-			tkn->col_end = tkn->col_start;
-		} else {
-			this->col += this->cur - this->tok;
-			tkn->col_end = this->col - 1;
-		}
-		this->tokens.push_back(shared_ptr<token>(tkn));
-	}
+	virtual size_t read(unsigned char *dst, size_t count) = 0;
 
 	void push(arua_abt type) {
 		this->push(new token(type));
@@ -171,7 +167,42 @@ struct input {
 	}
 };
 
-void lex_string(input &in) {
+struct input_file : public input_base {
+	FILE *const file;
+
+	input_file(string filename)
+			: file(fopen(filename.c_str(), "rb")) {
+		if (!file) {
+			throw runtime_error("could not open file for reading: " + filename + "(" + strerror(errno) + ")");
+		}
+	}
+
+	virtual size_t read(unsigned char *dst, size_t count) {
+		return fread(dst, 1, count, file);
+	}
+};
+
+struct input_str : public input_base {
+	string src;
+	size_t srcLen;
+	size_t curPos;
+
+	input_str(string srcStr)
+			: src(srcStr)
+			, srcLen(srcStr.length())
+			, curPos(0) {
+	}
+
+	virtual size_t read(unsigned char *dst, size_t count) {
+		size_t i = 0;
+		for (; i < count && curPos < srcLen; ++i, ++curPos) {
+			dst[i] = src[curPos];
+		}
+		return i;
+	}
+};
+
+void lex_string(input_base &in) {
 	in.push(ABT_STR_BEGIN);
 	for (;;) {
 		in.tok = in.cur;
@@ -197,7 +228,7 @@ void lex_string(input &in) {
 	in.push(ABT_STR_END);
 }
 
-void lex_input(input &in) {
+void lex_input(input_base &in) {
 	for (;;) {
 		in.tok = in.cur;
 /*!re2c
@@ -318,7 +349,7 @@ void print_token(const shared_ptr<token> &tkn, bool human = false) {
 	}
 }
 
-void print_highlighted(input &in) {
+void print_highlighted(input_base &in) {
 	for (const shared_ptr<token> &tkn : in.tokens) {
 		print_token(tkn);
 	}
@@ -332,7 +363,7 @@ void print_location(const shared_ptr<token> &tkn) {
 	cerr << "\x1b[m";
 }
 
-void print_locations(input &in) {
+void print_locations(input_base &in) {
 	for (const shared_ptr<token> &tkn : in.tokens) {
 		print_location(tkn);
 	}
@@ -566,8 +597,24 @@ bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 	return true;
 }
 
-shared_ptr<Module> arua::lex_file(string filename) {
-	input in(filename);
+bool parse_symbol_indirect(tokenitr &titr, shared_ptr<SymbolIndirect> &symbol, shared_ptr<SymbolContext> symCtx) {
+	symbol.reset(new SymbolIndirect(symCtx));
+
+	shared_ptr<Identifier> firstId;
+	if (!parse_identifier(titr, firstId)) return false;
+	symbol->addIdentifier(firstId);
+
+	while (expect(titr, ABT_DOT)) {
+		shared_ptr<Identifier> nextId;
+		if (!parse_identifier(titr, nextId)) return unexpected(titr);
+		symbol->addIdentifier(nextId);
+	}
+
+	return true;
+}
+
+shared_ptr<Module> arua::parse_file(string filename) {
+	input_file in(filename);
 	lex_input(in);
 	print_highlighted(in);
 	cerr << endl << "-----------------------------" << endl << endl;
@@ -576,5 +623,14 @@ shared_ptr<Module> arua::lex_file(string filename) {
 
 	shared_ptr<Module> module(new Module(filename));
 	tokenitr titr = in.tokens.cbegin();
-	return parse_module(titr, module) ? module : shared_ptr<Module>(nullptr);
+	return parse_module(titr, module) ? module : nullptr;
+}
+
+shared_ptr<SymbolIndirect> arua::parse_symbol_indirect(string str, shared_ptr<SymbolContext> symCtx) {
+	input_str in(str);
+	lex_input(in);
+
+	shared_ptr<SymbolIndirect> symbol;
+	tokenitr titr = in.tokens.cbegin();
+	return parse_symbol_indirect(titr, symbol, symCtx) ? symbol : nullptr;
 }

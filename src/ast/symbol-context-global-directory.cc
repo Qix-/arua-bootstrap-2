@@ -56,7 +56,7 @@ shared_ptr<SymbolEntry> SymbolContextGlobalDirectory::resolveSymbolEntry(string 
 			cerr << "aruab: notice: skipping non-file in zone search: " << newFile.str() << endl;
 		} else {
 			// cool, load it as a module and add it.
-			shared_ptr<SymbolContext> module = arua::lex_file(newFile.str());
+			shared_ptr<SymbolContext> module = arua::parse_file(newFile.str());
 			if (!module) {
 				return nullptr;
 			}
