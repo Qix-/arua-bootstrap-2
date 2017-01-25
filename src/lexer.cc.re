@@ -208,7 +208,7 @@ void lex_input(input &in) {
 		re2c:define:YYFILL = "if (!in.fill(@@)) return;";
 		re2c:define:YYFILL:naked = 1;
 
-		* { in.push(ABT_EOF); return; } // TODO error message
+		* { in.push(ABT_NL); in.push(ABT_EOF); return; } // TODO error message
 
 		"#:" [^\r\n\f]* { in.pushv(ABT_COMMENT_DOC); continue; }
 		"##" [^\r\n\f]* { in.pushv(ABT_COMMENT_HEADER); continue; }
