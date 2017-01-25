@@ -24,19 +24,20 @@ struct SymbolEntry {
 class SymbolContext : public SymbolVariant {
 	friend class SymbolIndirect;
 	friend class SymbolDirect;
+	friend class SymbolContextGlobal;
 public:
 	SymbolContext(std::shared_ptr<SymbolContext> parent = nullptr);
 	virtual ~SymbolContext() = default;
 
 	// TODO accept an error handler for duplicate symbols
-	void addType(std::shared_ptr<Identifier> name, std::shared_ptr<Type> type, bool pub = false) throw();
+	virtual void addType(std::shared_ptr<Identifier> name, std::shared_ptr<Type> type, bool pub = false) throw();
 	// TODO accept an error handler for duplicate symbols
-	void addAlias(std::shared_ptr<Identifier> name, std::shared_ptr<Target> target, bool pub = false) throw();
+	virtual void addAlias(std::shared_ptr<Identifier> name, std::shared_ptr<Target> target, bool pub = false) throw();
 	// TODO accept an error handler for duplicate symbols
-	void addRef(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> symCtx, bool pub = false) throw();
+	virtual void addRef(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> symCtx, bool pub = false) throw();
 
 protected:
-	std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> baseCtx) const throw();
+	virtual std::shared_ptr<SymbolEntry> resolveSymbolEntry(std::shared_ptr<Identifier> name, std::shared_ptr<SymbolContext> baseCtx) const throw();
 
 private:
 	bool assertDoesntExist(std::shared_ptr<Identifier> name) const throw();

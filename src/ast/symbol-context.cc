@@ -110,7 +110,7 @@ bool SymbolContext::assertDoesntExist(shared_ptr<Identifier> name) const throw()
 	auto existingSymbol = this->symbols.find(name->getIdentifier());
 	if (existingSymbol != this->symbols.end()) {
 		// TODO notify an error handler
-		cerr << "duplicate symbol '" << name->getIdentifier() << "' at " << name->getLine() << ":" << name->getColumnStart() << endl;
+		cerr << "aruab: error: duplicate symbol '" << name->getIdentifier() << "' at " << name->getLine() << ":" << name->getColumnStart() << endl;
 		return false;
 	}
 

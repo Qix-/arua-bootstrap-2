@@ -18,6 +18,7 @@ SRC := \
 	ast/identifier.cc \
 	ast/type-symbol.cc \
 	ast/target.cc \
+	ast/symbol-context-global.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
