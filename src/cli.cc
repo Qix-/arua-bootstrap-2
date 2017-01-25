@@ -53,7 +53,8 @@ static const xoptOption options[] = {
 		XOPT_TYPE_BOOL,
 		0,
 		"Shows this help message"
-	}
+	},
+	XOPT_NULLOPTION
 };
 
 bool arua::build_config(int argc, const char *argv[], arua::config &cfg) {
