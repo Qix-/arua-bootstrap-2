@@ -33,7 +33,7 @@ aruab : $(OBJS)
 	$(CXX) -o $@ $^ -g3 -O0 -lxopt -L../ext/xopt
 
 %.o : %.cc
-	$(CXX) -c -o $@ $< -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt
+	$(CXX) -c -o $@ $< -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem
 
 %.cc : %.cc.re
 	$(RE2C) -s8 -W -Werror -o $@ $<

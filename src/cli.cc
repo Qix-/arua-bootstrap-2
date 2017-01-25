@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
@@ -14,7 +15,36 @@ struct free_ptr {
 	}
 };
 
+void add_zone_path(const char *path, void *data, const xoptOption *option, bool longArg, const char **err) {
+	(void) option;
+	(void) longArg;
+
+	arua::config *cfg = (arua::config *)data;
+
+	filesystem::path fpath = path;
+	if (!fpath.exists()) {
+		*err = ("zone path does not exist: " + fpath.str()).c_str();
+		return;
+	}
+
+	if (!fpath.is_directory()) {
+		*err = ("zone path is not a directory: " + fpath.str()).c_str();
+		return;
+	}
+
+	cfg->zones.insert(fpath);
+}
+
 static const xoptOption options[] = {
+	{
+		"zone",
+		'Z',
+		0, // we don't care about it in our setter function
+		&add_zone_path,
+		XOPT_TYPE_STRING,
+		0,
+		"Specifies a zone search path"
+	},
 	{
 		"help",
 		'?',
@@ -53,9 +83,17 @@ bool arua::build_config(int argc, const char *argv[], arua::config &cfg) {
 		return true;
 	}
 
-	for (int i = 0; i < extrac; i++) {
-		cfg.files.push_back(extrav[i]);
+	if (extrac < 1) {
+		cerr << "aruab: error: no main symbol specified" << endl;
+		return true;
 	}
+
+	if (extrac > 1) {
+		cerr << "aruab: error: a single main symbol must be specified; " << extrac << " were specified" << endl;
+		return true;
+	}
+
+	cfg.mainSymbol = extrav[0];
 	free(extrav);
 
 	return false;

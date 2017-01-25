@@ -5,3 +5,6 @@
 	path = ext/re2c
 	url = git@github.com:skvadrik/re2c.git
 	ignore = all
+[submodule "ext/filesystem"]
+	path = ext/filesystem
+	url = https://github.com/bin-build/filesystem.git
