@@ -54,6 +54,7 @@ shared_ptr<SymbolDirect> SymbolIndirect::resolve() const throw() {
 	auto idItr = this->identifiers.cbegin();
 	auto idLast = this->identifiers.cend() - 1;
 
+	// TODO make recursive so that SymbolContextGlobalZone properly resolves partially overlapping zones.
 	for (; idItr != idLast; ++idItr) {
 		auto resolved = curCtx->resolveSymbolEntry(*idItr, lastCtx);
 		if (!resolved) {
