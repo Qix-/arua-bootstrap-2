@@ -49,10 +49,6 @@ shared_ptr<SymbolDirect> SymbolIndirect::resolve() const throw() {
 		return nullptr;
 	}
 
-	if (this->identifiers.size() == 1) {
-		return shared_ptr<SymbolDirect>(new SymbolDirect(this->getContext(), this->identifiers[0]));
-	}
-
 	auto lastCtx = this->getContext();
 	auto curCtx = this->getContext();
 	auto idItr = this->identifiers.cbegin();
@@ -73,6 +69,10 @@ shared_ptr<SymbolDirect> SymbolIndirect::resolve() const throw() {
 
 		lastCtx = curCtx;
 		curCtx = static_pointer_cast<SymbolContext>(resolved->value);
+	}
+
+	if (!curCtx->resolveSymbolEntry(*idLast, lastCtx)) {
+		return nullptr;
 	}
 
 	return shared_ptr<SymbolDirect>(new SymbolDirect(curCtx, *idLast));

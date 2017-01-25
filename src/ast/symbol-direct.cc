@@ -26,6 +26,10 @@ const shared_ptr<Identifier> SymbolDirect::getIdentifier() const throw() {
 }
 
 shared_ptr<SymbolDirect> SymbolDirect::resolve() const throw() {
+	if (!this->getContext()->resolveSymbolEntry(this->identifier, this->getContext())) {
+		return nullptr;
+	}
+
 	return shared_ptr<SymbolDirect>(new SymbolDirect(this->getContext(), this->identifier));
 }
 
