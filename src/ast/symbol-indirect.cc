@@ -60,6 +60,10 @@ shared_ptr<SymbolDirect> SymbolIndirect::resolve() const throw() {
 
 	for (; idItr != idLast; ++idItr) {
 		auto resolved = curCtx->resolveSymbolEntry(*idItr, lastCtx);
+		if (!resolved) {
+			return nullptr;
+		}
+
 		if (resolved->type != SymbolType::CTXREF) {
 			// TODO hand off to error handler
 			cerr << "ERROR: identifier '" << (*idItr)->getIdentifier() << "' in indirect symbol does not refer to a symbol context at "
