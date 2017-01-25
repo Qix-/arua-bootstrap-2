@@ -657,7 +657,7 @@ bool parse_module(tokenitr &titr, shared_ptr<Module> module) {
 	return true;
 }
 
-bool parse_symbol_indirect(tokenitr &titr, shared_ptr<SymbolIndirect> &symbol, shared_ptr<SymbolContext> symCtx) {
+bool parse_symbol_indirect(tokenitr &titr, shared_ptr<SymbolIndirect> &symbol, shared_ptr<SymbolContext> symCtx, bool expectEnd = false) {
 	symbol.reset(new SymbolIndirect(symCtx));
 
 	shared_ptr<Identifier> firstId;
@@ -668,6 +668,11 @@ bool parse_symbol_indirect(tokenitr &titr, shared_ptr<SymbolIndirect> &symbol, s
 		shared_ptr<Identifier> nextId;
 		if (!parse_identifier(titr, nextId)) return unexpected(titr);
 		symbol->addIdentifier(nextId);
+	}
+
+	if (expectEnd) {
+		if (!expect(titr, ABT_NL)) return unexpected(titr);
+		if (!expect(titr, ABT_EOF)) return unexpected(titr);
 	}
 
 	return true;
@@ -694,5 +699,5 @@ shared_ptr<SymbolIndirect> arua::parse_symbol_indirect(string str, shared_ptr<Sy
 	shared_ptr<SymbolIndirect> symbol;
 	tokenvecitr vitr = in.tokens.cbegin();
 	tokenitr titr(vitr);
-	return parse_symbol_indirect(titr, symbol, symCtx) ? symbol : nullptr;
+	return parse_symbol_indirect(titr, symbol, symCtx, true) ? symbol : nullptr;
 }
