@@ -60,6 +60,8 @@ static const xoptOption options[] = {
 bool arua::build_config(int argc, const char *argv[], arua::config &cfg) {
 	const char *err;
 
+	cfg.help = false;
+
 	unique_ptr<xoptContext, free_ptr> ctx(xopt_context("aruab", options, XOPT_CTX_POSIXMEHARDER | XOPT_CTX_STRICT, &err));
 	if (err) {
 		throw runtime_error(err);
