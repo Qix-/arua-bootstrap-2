@@ -70,7 +70,6 @@ bool arua::build_config(int argc, const char *argv[], arua::config &cfg) {
 	const char **extrav = 0;
 	int extrac = xopt_parse(ctx.get(), argc, argv, &cfg, &extrav, &err);
 	if (err) {
-		free(extrav);
 		throw runtime_error(err);
 	}
 
