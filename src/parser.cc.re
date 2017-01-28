@@ -682,9 +682,7 @@ shared_ptr<Module> arua::parse_file(string filename) {
 	input_file in(filename);
 	lex_input(in);
 	print_highlighted(in);
-	cerr << endl << "-----------------------------" << endl << endl;
-	print_locations(in);
-	cerr << endl << endl;
+	// print_locations(in);
 
 	shared_ptr<Module> module(new Module(filename));
 	tokenvecitr vitr = in.tokens.cbegin();
