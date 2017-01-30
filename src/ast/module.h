@@ -5,10 +5,11 @@
 #include <string>
 
 #include "symbol-context.h"
+#include "target.h"
 
 namespace arua {
 
-class Module : public SymbolContext {
+class Module : public SymbolContext, public Target {
 public:
 	Module(const std::string &name);
 

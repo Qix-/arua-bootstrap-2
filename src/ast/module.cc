@@ -4,7 +4,8 @@ using namespace arua;
 using namespace std;
 
 Module::Module(const string &name)
-		: name(name) {
+		: Target(TargetType::Module)
+		, name(name) {
 }
 
 string Module::getName() const throw() {
