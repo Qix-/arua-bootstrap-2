@@ -3,15 +3,13 @@
 #pragma once
 
 #include <memory>
-#include <string>
+
+#include "filesystem/path.h"
 
 #include "ast/module.h"
-#include "ast/symbol-context.h"
-#include "ast/symbol-indirect.h"
 
 namespace arua {
-	std::shared_ptr<SymbolIndirect> parse_symbol_indirect(std::string symbol, std::shared_ptr<SymbolContext> symCtx);
-	std::shared_ptr<Module> parse_file(std::string filename);
+	std::shared_ptr<Module> parseFile(filesystem::path filename, unsigned int tabWidth = 8);
 }
 
 #endif

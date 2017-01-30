@@ -3,8 +3,9 @@
 using namespace arua;
 using namespace std;
 
-Module::Module(const string &name)
-		: Target(TargetType::Module)
+Module::Module(shared_ptr<Universe> universe, const string &name)
+		: SymbolContext(universe)
+		, Target(TargetType::Module)
 		, name(name) {
 }
 

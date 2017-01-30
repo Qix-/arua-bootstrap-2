@@ -11,10 +11,9 @@ namespace arua {
 
 class Module : public SymbolContext, public Target {
 public:
-	Module(const std::string &name);
+	Module(std::shared_ptr<Universe> universe, const std::string &name);
 
 	std::string getName() const throw();
-
 private:
 	const std::string name;
 };

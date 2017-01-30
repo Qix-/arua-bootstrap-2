@@ -5,23 +5,24 @@ RE2C := ../ext/re2c/re2c/re2c
 
 SRC := \
 	cli.cc \
-	parser.cc.re \
+	parser.cc \
+	lexer.cc.re \
 	ast/module.cc \
 	ast/type.cc \
 	ast/type-scalar.cc \
 	ast/type-array.cc \
-	ast/symbol.cc \
-	ast/symbol-direct.cc \
-	ast/symbol-indirect.cc \
 	ast/type-function.cc \
 	ast/symbol-context.cc \
-	ast/token-simple.cc \
 	ast/identifier.cc \
 	ast/type-symbol.cc \
 	ast/target.cc \
 	ast/symbol-context-global.cc \
 	ast/symbol-context-global-directory.cc \
 	ast/symbol-context-global-zone.cc \
+	ast/universe.cc \
+	ast/node.cc \
+	ast/problem.cc \
+	ast/lex-util.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
