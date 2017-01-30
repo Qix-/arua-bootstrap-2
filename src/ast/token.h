@@ -57,7 +57,7 @@ struct Token {
 	unsigned int columnStart;
 	unsigned int columnEnd;
 	filesystem::path source;
-	std::weak_ptr<std::list<std::shared_ptr<Token>>> tokenList;
+	std::weak_ptr<std::list<std::shared_ptr<const Token>>> tokenList;
 	std::string value;
 };
 

@@ -28,8 +28,8 @@ private:
 };
 
 // note that these WILL throw exceptions in the event there is an invalid token.
-std::shared_ptr<std::list<std::shared_ptr<Token>>> lexFile(filesystem::path path, unsigned int tabWidth = 8);
-std::shared_ptr<std::list<std::shared_ptr<Token>>> lexString(std::string source, unsigned int tabWidth = 8);
+std::shared_ptr<std::list<std::shared_ptr<const Token>>> lexFile(filesystem::path path, unsigned int tabWidth = 8);
+std::shared_ptr<std::list<std::shared_ptr<const Token>>> lexString(std::string source, unsigned int tabWidth = 8);
 
 }
 

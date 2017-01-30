@@ -29,7 +29,7 @@ struct Input {
 	unsigned char *mar;
 	unsigned char *tok;
 	bool eof;
-	shared_ptr<list<shared_ptr<Token>>> tokens;
+	shared_ptr<list<shared_ptr<const Token>>> tokens;
 	unsigned int line;
 	unsigned int col;
 	unsigned int tabWidth;
@@ -41,7 +41,7 @@ struct Input {
 			, mar(lim)
 			, tok(lim)
 			, eof(false)
-			, tokens(new list<shared_ptr<Token>>())
+			, tokens(new list<shared_ptr<const Token>>())
 			, line(1)
 			, col(1)
 			, tabWidth(tabWidth) {
@@ -245,13 +245,13 @@ void lex_input(Input &in) {
 	}
 }
 
-shared_ptr<list<shared_ptr<Token>>> arua::lexFile(filesystem::path path, unsigned int tabWidth) {
+shared_ptr<list<shared_ptr<const Token>>> arua::lexFile(filesystem::path path, unsigned int tabWidth) {
 	InputFile in(path, tabWidth);
 	lex_input(in);
 	return in.tokens;
 }
 
-shared_ptr<list<shared_ptr<Token>>> arua::lexString(string source, unsigned int tabWidth) {
+shared_ptr<list<shared_ptr<const Token>>> arua::lexString(string source, unsigned int tabWidth) {
 	InputString in(source, tabWidth);
 	lex_input(in);
 	return in.tokens;
