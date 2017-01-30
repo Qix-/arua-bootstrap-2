@@ -2,8 +2,10 @@
 #define ARUAB_AST_TYPE_H__
 #pragma once
 
+#include <memory>
+
+#include "node.h"
 #include "target.h"
-#include "token.h"
 
 namespace arua {
 
@@ -14,9 +16,9 @@ enum class PrimitiveType {
 	SYMBOL,
 };
 
-class Type : public virtual Token, public Target {
+class Type : public Node, public Target {
 public:
-	Type(PrimitiveType primType);
+	Type(std::shared_ptr<Universe> universe, PrimitiveType primType);
 
 	PrimitiveType getPrimitiveType() const throw();
 

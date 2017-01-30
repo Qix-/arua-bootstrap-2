@@ -1,9 +1,11 @@
 #include "type.h"
 
 using namespace arua;
+using namespace std;
 
-Type::Type(PrimitiveType primType)
-		: Target(TargetType::TYPE)
+Type::Type(shared_ptr<Universe> universe, PrimitiveType primType)
+		: Node(universe)
+		, Target(TargetType::TYPE)
 		, primType(primType) {
 }
 
