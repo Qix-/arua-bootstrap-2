@@ -2,7 +2,6 @@
 #define ARUAB_AST_TYPE_H__
 #pragma once
 
-#include "symbol-variant.h"
 #include "target.h"
 #include "token.h"
 
