@@ -14,15 +14,12 @@ SRC := \
 	ast/type-function.cc \
 	ast/symbol-context.cc \
 	ast/identifier.cc \
-	ast/type-symbol.cc \
 	ast/target.cc \
-	ast/symbol-context-global.cc \
-	ast/symbol-context-global-directory.cc \
-	ast/symbol-context-global-zone.cc \
 	ast/universe.cc \
 	ast/node.cc \
 	ast/problem.cc \
-	ast/lex-util.cc \
+	lex-util.cc \
+	parse-problem.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

@@ -25,7 +25,7 @@ public:
 	ProblemType getType() const throw();
 	std::string getMessage() const throw();
 
-	Problem & addReference(Universe::ID id, std::string message) throw();
+	Problem * addReference(Universe::ID id, std::string message) throw();
 
 private:
 	ProblemType type;

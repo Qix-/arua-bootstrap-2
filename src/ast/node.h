@@ -14,7 +14,11 @@ public:
 
 	std::shared_ptr<Universe> getUniverse() const throw();
 	Universe::ID getID() const throw();
-	std::shared_ptr<Node> ptr() throw();
+
+	template <typename T>
+	std::shared_ptr<T> ptr() throw() {
+		return std::static_pointer_cast<T>(this->thisPtr.lock());
+	}
 
 protected:
 	Node(std::shared_ptr<Universe> universe);

@@ -11,10 +11,6 @@ Universe::ID Node::getID() const throw() {
 	return this->id;
 }
 
-shared_ptr<Node> Node::ptr() throw() {
-	return this->thisPtr.lock();
-}
-
 Node::Node(shared_ptr<Universe> universe)
 		: universe(universe) {
 	shared_ptr<Node> thisShared(this);

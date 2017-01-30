@@ -5,7 +5,7 @@ using namespace std;
 
 Module::Module(shared_ptr<Universe> universe, const string &name)
 		: SymbolContext(universe)
-		, Target(TargetType::Module)
+		, Target(TargetType::MODULE)
 		, name(name) {
 }
 

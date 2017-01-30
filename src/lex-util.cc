@@ -2,7 +2,7 @@
 
 using namespace std;
 
-string arua::formatToken(const shared_ptr<Token> tkn, bool human) {
+string arua::formatToken(const shared_ptr<const Token> tkn, bool human) {
 	switch (tkn->type) {
 	case ABT_EOF: return (human ? "end of input" : "");
 	case ABT_WS: return (human ? "whitespace" : " ");
@@ -63,11 +63,11 @@ string arua::formatToken(const shared_ptr<Token> tkn, bool human) {
 	}
 }
 
-void arua::renderTokens(std::list<std::shared_ptr<Token>> &tokens, std::ostream &stream) {
+void arua::renderTokens(std::list<std::shared_ptr<const Token>> &tokens, std::ostream &stream) {
 	arua::renderTokens(tokens.cbegin(), tokens.cend(), stream);
 }
 
-void arua::renderTokens(std::list<std::shared_ptr<Token>>::const_iterator begin, std::list<std::shared_ptr<Token>>::const_iterator end, std::ostream &stream) {
+void arua::renderTokens(std::list<std::shared_ptr<const Token>>::const_iterator begin, std::list<std::shared_ptr<const Token>>::const_iterator end, std::ostream &stream) {
 	for (; begin != end; begin++) {
 		stream << formatToken(*begin);
 	}
