@@ -31,7 +31,7 @@ OBJS := $(CCSRC:.cc=.o)
 all: aruab
 
 clean:
-	rm -rf parser.cc
+	rm -rf lexer.cc
 	rm -rf aruab $(OBJS)
 
 aruab : $(OBJS)
