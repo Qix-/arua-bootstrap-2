@@ -3,15 +3,19 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
+#include <vector>
+
+#include "problem-type.h"
+#include "universe.h"
 
 namespace arua {
 
-enum class ProblemType {
-	NOTICE,
-	WARNING,
-	ERROR,
+struct ProblemReference {
+	Universe::ID id;
+	std::string message;
 };
 
 class Problem : public std::runtime_error {
@@ -21,9 +25,12 @@ public:
 	ProblemType getType() const throw();
 	std::string getMessage() const throw();
 
+	Problem & addReference(Universe::ID id, std::string message) throw();
+
 private:
 	ProblemType type;
 	std::string message;
+	std::vector<std::shared_ptr<ProblemReference>> references;
 };
 
 }

@@ -1,3 +1,4 @@
+#include "problem.h"
 #include "universe.h"
 
 using namespace arua;
@@ -47,20 +48,20 @@ Universe::ID Universe::resolveForwards(ID id) const throw() {
 	return id;
 }
 
-Problem & Universe::addProblem(Universe::ID id, ProblemType type, string message) throw() {
+Problem * Universe::addProblem(Universe::ID id, ProblemType type, string message) throw() {
 	shared_ptr<Problem> problem(new Problem(type, message));
 	this->problems[id].push_back(problem);
-	return *problem;
+	return problem.get();
 }
 
-Problem & Universe::addError(Universe::ID id, string message) throw() {
+Problem * Universe::addError(Universe::ID id, string message) throw() {
 	return this->addProblem(id, ProblemType::ERROR, message);
 }
 
-Problem & Universe::addWarning(Universe::ID id, string message) throw() {
+Problem * Universe::addWarning(Universe::ID id, string message) throw() {
 	return this->addProblem(id, ProblemType::WARNING, message);
 }
 
-Problem & Universe::addNotice(Universe::ID id, string message) throw() {
+Problem * Universe::addNotice(Universe::ID id, string message) throw() {
 	return this->addProblem(id, ProblemType::NOTICE, message);
 }
