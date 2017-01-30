@@ -10,7 +10,7 @@
 #include "ast/universe.h"
 
 namespace arua {
-	std::shared_ptr<Module> parseFile(std::shared_ptr<Universe> universe, filesystem::path filename, unsigned int tabWidth = 8);
+	std::shared_ptr<Module> parseFile(std::shared_ptr<Universe> universe, filesystem::path filename, unsigned int tabWidth = 8) throw();
 }
 
 #endif

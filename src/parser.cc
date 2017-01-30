@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "ast/module.h"
 #include "ast/target.h"
 #include "ast/type.h"
@@ -16,6 +18,7 @@ typedef list<shared_ptr<const Token>>::const_iterator TokenListIterator;
 struct Tokenizer {
 	shared_ptr<Universe> universe;
 	TokenListIterator &itr;
+	unordered_set<Universe::ID> deferred;
 
 	bool pub;
 
@@ -51,7 +54,9 @@ struct Tokenizer {
 };
 
 bool unexpected(Tokenizer &t) {
-	throw ParseProblem((*t)->line, (*t)->columnStart, "unexpected token: " + arua::formatToken(*t, true));
+	auto id = t.universe->addNode();
+	t.universe->addToken(id, *t);
+	t.universe->addError(id, "unexpected token");
 	return false;
 }
 
@@ -96,7 +101,7 @@ bool parse_identifier(Tokenizer &t, shared_ptr<Identifier> &id) {
 	return true;
 }
 
-std::shared_ptr<Module> arua::parseFile(std::shared_ptr<Universe> universe, filesystem::path filename, unsigned int tabWidth) {
+std::shared_ptr<Module> arua::parseFile(std::shared_ptr<Universe> universe, filesystem::path filename, unsigned int tabWidth) throw() {
 	auto tokens = arua::lexFile(filename, tabWidth);
 
 	shared_ptr<Module> module(new Module(universe, filename.str()));
