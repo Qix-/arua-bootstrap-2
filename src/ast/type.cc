@@ -4,7 +4,7 @@ using namespace arua;
 using namespace std;
 
 Type::Type(shared_ptr<Universe> universe, PrimitiveType primType)
-		: Node(universe)
+		: Node(universe, NodeType::TYPE)
 		, Target(TargetType::TYPE)
 		, primType(primType) {
 }

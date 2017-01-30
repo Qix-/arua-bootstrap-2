@@ -15,7 +15,7 @@ namespace arua {
 
 class SymbolContext : public Node {
 public:
-	SymbolContext(std::shared_ptr<Universe> universe, std::shared_ptr<SymbolContext> parent = nullptr);
+	SymbolContext(std::shared_ptr<Universe> universe, NodeType nodeType, std::shared_ptr<SymbolContext> parent = nullptr);
 	virtual ~SymbolContext() = default;
 
 	std::shared_ptr<SymbolContext> getParent() throw();

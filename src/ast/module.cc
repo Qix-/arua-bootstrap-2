@@ -4,7 +4,7 @@ using namespace arua;
 using namespace std;
 
 Module::Module(shared_ptr<Universe> universe, const string &name)
-		: SymbolContext(universe)
+		: SymbolContext(universe, NodeType::MODULE)
 		, Target(TargetType::MODULE)
 		, name(name) {
 }

@@ -4,7 +4,7 @@ using namespace arua;
 using namespace std;
 
 Identifier::Identifier(shared_ptr<Universe> universe, string identifier)
-		: Node(universe)
+		: Node(universe, NodeType::IDENTIFIER)
 		, identifier(identifier) {
 }
 

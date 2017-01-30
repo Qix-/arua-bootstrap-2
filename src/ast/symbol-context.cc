@@ -4,8 +4,8 @@
 using namespace arua;
 using namespace std;
 
-SymbolContext::SymbolContext(shared_ptr<Universe> universe, shared_ptr<SymbolContext> parent)
-		: Node(universe)
+SymbolContext::SymbolContext(shared_ptr<Universe> universe, NodeType nodeType, shared_ptr<SymbolContext> parent)
+		: Node(universe, nodeType)
 		, parent(parent) {
 }
 

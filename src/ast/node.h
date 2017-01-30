@@ -8,11 +8,18 @@
 
 namespace arua {
 
+enum class NodeType {
+	MODULE,
+	TYPE,
+	IDENTIFIER,
+};
+
 class Node {
 public:
 	virtual ~Node() = default;
 
 	std::shared_ptr<Universe> getUniverse() const throw();
+	NodeType getNodeType() const throw();
 	Universe::ID getID() const throw();
 
 	template <typename T>
@@ -21,10 +28,11 @@ public:
 	}
 
 protected:
-	Node(std::shared_ptr<Universe> universe);
+	Node(std::shared_ptr<Universe> universe, NodeType type);
 
 private:
 	std::shared_ptr<Universe> universe;
+	NodeType type;
 	Universe::ID id;
 	std::weak_ptr<Node> thisPtr;
 };
