@@ -4,13 +4,13 @@
 
 #include <string>
 
-#include "token-simple.h"
+#include "node.h"
 
 namespace arua {
 
-class Identifier : public TokenSimple {
+class Identifier : public Node {
 public:
-	Identifier(unsigned int line, unsigned int colStart, std::string identifier);
+	Identifier(std::shared_ptr<Universe> universe, std::string identifier);
 	virtual ~Identifier() = default;
 
 	const std::string & getIdentifier() const throw();

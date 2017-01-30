@@ -3,8 +3,8 @@
 using namespace arua;
 using namespace std;
 
-Identifier::Identifier(unsigned int line, unsigned int colStart, string identifier)
-		: TokenSimple(line, colStart, colStart + identifier.length())
+Identifier::Identifier(shared_ptr<Universe> universe, string identifier)
+		: Node(universe)
 		, identifier(identifier) {
 }
 
