@@ -10,7 +10,7 @@
 
 namespace arua {
 
-class TypeFunction : public Type, public TokenSimple {
+class TypeFunction : public Type {
 public:
 	TypeFunction(unsigned int line, unsigned int colStart, unsigned int colEnd);
 

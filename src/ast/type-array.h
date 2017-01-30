@@ -12,10 +12,6 @@ class TypeArray : public Type {
 public:
 	TypeArray(std::shared_ptr<Type> innerType, unsigned int depth);
 
-	virtual unsigned int getLine() const throw();
-	virtual unsigned int getColumnStart() const throw();
-	virtual unsigned int getColumnEnd() const throw();
-
 	const std::shared_ptr<Type> getInnerType() const throw();
 	unsigned int getDepth() const throw();
 

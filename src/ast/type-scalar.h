@@ -13,13 +13,9 @@ enum class ScalarClass {
 	FLOAT,
 };
 
-class TypeScalar : public Type, public virtual TokenSimple {
+class TypeScalar : public Type {
 public:
 	TypeScalar(unsigned int line, unsigned int colStart, unsigned int colEnd, ScalarClass scalarClass, unsigned int width);
-
-	using TokenSimple::getLine;
-	using TokenSimple::getColumnStart;
-	using TokenSimple::getColumnEnd;
 
 	ScalarClass getScalarClass() const throw();
 	unsigned int getWidth() const throw();

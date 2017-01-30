@@ -9,20 +9,6 @@ TypeArray::TypeArray(std::shared_ptr<Type> innerType, unsigned int depth)
 		, depth(depth) {
 }
 
-unsigned int TypeArray::getLine() const throw() {
-	return this->innerType->getLine();
-}
-
-unsigned int TypeArray::getColumnStart() const throw() {
-	// we can guarantee this since arrays don't allow for whitespace between the brackets and inner type.
-	return this->innerType->getColumnStart() - this->depth;
-}
-
-unsigned int TypeArray::getColumnEnd() const throw() {
-	// we can guarantee this since arrays don't allow for whitespace between the brackets and inner type.
-	return this->innerType->getColumnEnd() + this->depth;
-}
-
 const shared_ptr<Type> TypeArray::getInnerType() const throw() {
 	return this->innerType;
 }
