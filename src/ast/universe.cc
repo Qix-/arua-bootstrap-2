@@ -39,7 +39,7 @@ shared_ptr<const Token> Universe::getToken(Universe::ID id) const throw() {
 }
 
 shared_ptr<Node> Universe::getNode(ID id) throw() {
-	id = this->resolveForwards(id);
+	id = this->resolve(id);
 	auto node = this->nodes.find(id);
 	if (node == this->nodes.end()) {
 		return nullptr;
@@ -47,7 +47,7 @@ shared_ptr<Node> Universe::getNode(ID id) throw() {
 	return node->second;
 }
 
-Universe::ID Universe::resolveForwards(ID id) const throw() {
+Universe::ID Universe::resolve(ID id) const throw() {
 	unordered_map<Universe::ID, Universe::ID>::const_iterator citr;
 	while ((citr = this->forwardings.find(id)) != this->forwardings.cend()) {
 		id = citr->second;

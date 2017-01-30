@@ -37,9 +37,9 @@ public:
 	Problem * addWarning(ID id, std::string message) throw();
 	Problem * addNotice(ID id, std::string message) throw();
 
-private:
-	ID resolveForwards(ID id) const throw();
+	ID resolve(ID id) const throw();
 
+private:
 	std::unordered_map<ID, std::shared_ptr<Node>> nodes;
 	std::unordered_map<ID, ID> forwardings;
 	std::unordered_map<ID, std::shared_ptr<const Token>> tokens;
