@@ -2,16 +2,14 @@
 #define ARUAB_AST_TARGET_H__
 #pragma once
 
-#include "symbol-variant.h"
-
 namespace arua {
 
 enum class TargetType {
-	SYMBOL,
+	MODULE,
 	TYPE,
 };
 
-struct Target : public SymbolVariant {
+struct Target {
 	Target(TargetType type);
 	virtual ~Target() = default;
 
