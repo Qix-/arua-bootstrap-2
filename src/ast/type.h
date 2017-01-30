@@ -13,7 +13,6 @@ enum class PrimitiveType {
 	SCALAR,
 	ARRAY,
 	FUNCTION,
-	SYMBOL,
 };
 
 class Type : public Node, public Target {
