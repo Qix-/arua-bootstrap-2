@@ -12,6 +12,10 @@ unsigned long long Universe::getCount() const throw() {
 	return this->count;
 }
 
+Universe::ID Universe::addNode() throw() {
+	return this->count++;
+}
+
 Universe::ID Universe::addNode(shared_ptr<Node> node) throw() {
 	ID id = this->count++;
 	this->nodes[id] = node;

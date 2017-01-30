@@ -23,6 +23,7 @@ public:
 
 	ID getCount() const throw();
 
+	ID addNode() throw();
 	ID addNode(std::shared_ptr<Node> node) throw();
 	void addToken(ID node, const std::shared_ptr<const Token> token) throw();
 	void forward(ID from, ID to) throw();
