@@ -3,8 +3,8 @@
 using namespace arua;
 using namespace std;
 
-TypeArray::TypeArray(std::shared_ptr<Type> innerType, unsigned int depth)
-		: Type(PrimitiveType::ARRAY)
+TypeArray::TypeArray(shared_ptr<Universe> universe, shared_ptr<Type> innerType, unsigned int depth)
+		: Type(universe, PrimitiveType::ARRAY)
 		, innerType(innerType)
 		, depth(depth) {
 }

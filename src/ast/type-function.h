@@ -5,14 +5,13 @@
 #include <vector>
 #include <memory>
 
-#include "token-simple.h"
 #include "type.h"
 
 namespace arua {
 
 class TypeFunction : public Type {
 public:
-	TypeFunction(unsigned int line, unsigned int colStart, unsigned int colEnd);
+	TypeFunction(std::shared_ptr<Universe> universe);
 
 	// a shared_ptr with a ptr of 0 means void
 	void setReturnType(std::shared_ptr<Type> returnType);

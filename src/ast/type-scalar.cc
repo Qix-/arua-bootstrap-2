@@ -1,10 +1,10 @@
 #include "type-scalar.h"
 
 using namespace arua;
+using namespace std;
 
-TypeScalar::TypeScalar(unsigned int line, unsigned int colStart, unsigned int colEnd, ScalarClass scalarClass, unsigned int width)
-		: TokenSimple(line, colStart, colEnd)
-		, Type(PrimitiveType::SCALAR)
+TypeScalar::TypeScalar(shared_ptr<Universe> universe, ScalarClass scalarClass, unsigned int width)
+		: Type(universe, PrimitiveType::SCALAR)
 		, scalarClass(scalarClass)
 		, width(width) {
 }

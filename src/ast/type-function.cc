@@ -3,9 +3,8 @@
 using namespace arua;
 using namespace std;
 
-TypeFunction::TypeFunction(unsigned int line, unsigned int colStart, unsigned int colEnd)
-		: Type(PrimitiveType::FUNCTION)
-		, TokenSimple(line, colStart, colEnd) {
+TypeFunction::TypeFunction(shared_ptr<Universe> universe)
+		: Type(universe, PrimitiveType::FUNCTION) {
 }
 
 const shared_ptr<Type> TypeFunction::getReturnType() const throw() {

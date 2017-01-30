@@ -10,7 +10,7 @@ namespace arua {
 
 class TypeArray : public Type {
 public:
-	TypeArray(std::shared_ptr<Type> innerType, unsigned int depth);
+	TypeArray(std::shared_ptr<Universe> universe, std::shared_ptr<Type> innerType, unsigned int depth);
 
 	const std::shared_ptr<Type> getInnerType() const throw();
 	unsigned int getDepth() const throw();
