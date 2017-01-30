@@ -12,6 +12,7 @@ namespace arua {
 struct config {
 	std::string mainSymbol;
 	std::set<filesystem::path> zones;
+	int tabWidth;
 	bool help;
 };
 

@@ -46,6 +46,15 @@ static const xoptOption options[] = {
 		"Specifies a zone search path"
 	},
 	{
+		"tab-width",
+		0,
+		offsetof(arua::config, tabWidth),
+		0,
+		XOPT_TYPE_INT,
+		"4",
+		"The tab width, in columns (used for error messages)"
+	},
+	{
 		"help",
 		'?',
 		offsetof(arua::config, help),
@@ -61,6 +70,7 @@ bool arua::build_config(int argc, const char *argv[], arua::config &cfg) {
 	const char *err;
 
 	cfg.help = false;
+	cfg.tabWidth = 4;
 
 	unique_ptr<xoptContext, free_ptr> ctx(xopt_context("aruab", options, XOPT_CTX_POSIXMEHARDER | XOPT_CTX_STRICT, &err));
 	if (err) {
