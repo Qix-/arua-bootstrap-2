@@ -73,6 +73,7 @@ struct Input {
 		tkn->tokenList = this->tokens;
 
 		this->tokens->push_back(tkn);
+		tkn->iterator = --this->tokens->cend();
 	}
 
 	bool fill(size_t need) {
