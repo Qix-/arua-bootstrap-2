@@ -4,6 +4,10 @@
 using namespace arua;
 using namespace std;
 
+Universe::Universe()
+		: count(1LL) {
+}
+
 unsigned long long Universe::getCount() const throw() {
 	return this->count;
 }

@@ -19,6 +19,8 @@ class Universe {
 public:
 	typedef unsigned long long ID;
 
+	Universe();
+
 	ID getCount() const throw();
 
 	ID addNode(std::shared_ptr<Node> node) throw();
@@ -42,6 +44,7 @@ private:
 	std::unordered_map<ID, std::shared_ptr<const Token>> tokens;
 	std::unordered_map<ID, std::vector<std::shared_ptr<Problem>>> problems;
 
+	// count starts at 1; 0 indicates missing or error (usually unresolved)
 	ID count;
 };
 
