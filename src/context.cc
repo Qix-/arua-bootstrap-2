@@ -18,11 +18,14 @@ Ptr<Value> Context::resolve(string name) throw() {
 	return parent ? parent->resolve(name) : nullptr;
 }
 
-void Context::addType(Ptr<Type> type) throw() {
+void Context::addType(Ptr<Type> type, bool pub) throw() {
 	if (type->getName().empty()) {
 		cerr << "warning: Context::addType() was passed a type with no name" << endl;
 		return;
 	}
 
 	this->types[type->getName()] = type;
+	if (pub) {
+		this->publicNames.insert(type->getName());
+	}
 }

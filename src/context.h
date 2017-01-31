@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 #include "ptr.h"
@@ -19,11 +20,12 @@ public:
 
 	Ptr<Value> resolve(std::string name) throw();
 
-	void addType(Ptr<Type> type) throw();
+	void addType(Ptr<Type> type, bool pub = false) throw();
 
 private:
 	std::shared_ptr<Context> parent;
 	std::unordered_map<std::string, Ptr<Type>> types;
+	std::unordered_set<std::string> publicNames;
 };
 
 }
