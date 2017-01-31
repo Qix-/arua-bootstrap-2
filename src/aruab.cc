@@ -21,7 +21,10 @@ int protected_main(int argc, const char *argv[]) {
 
 	// TODO DEBUG
 	// this will all get revamed like it was.
-	arua::parseFile(cfg.mainSymbol, cfg.tabWidth);
+	shared_ptr<Module> module = arua::parseFile(cfg.mainSymbol, cfg.tabWidth);
+	if (module == nullptr) {
+		return 1;
+	}
 
 //	shared_ptr<SymbolContextGlobalZone> globalZone(new SymbolContextGlobalZone(cfg.zones));
 //
