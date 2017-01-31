@@ -2,6 +2,8 @@
 #define ARUAB_VALUE_H__
 #pragma once
 
+#include <string>
+
 #include "value-type.h"
 
 namespace arua {
@@ -13,8 +15,12 @@ public:
 
 	ValueType getValueType() const throw();
 
+	void setName(std::string name) throw();
+	std::string getName() const throw();
+
 private:
 	ValueType type;
+	std::string name;
 };
 
 }
