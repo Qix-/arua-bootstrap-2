@@ -170,7 +170,7 @@ bool parse_pub(Tokenizer &t) {
 	return true;
 }
 
-bool parse_type(Tokenizer &t, Ptr<Type> &type);
+bool parse_type(Tokenizer &t, Ptr<Type> &type, bool expected = true);
 
 bool parse_array(Tokenizer &t, Ptr<Type> &type) {
 	if (!expect(t, ABT_OBRACKET)) return unexpected(t);
@@ -213,7 +213,7 @@ bool parse_fn(Tokenizer &t, Ptr<Type> &type) {
 	// gotta be sneaky and check for whitespace + valid type as a return type.
 	t.push();
 	Ptr<Type> returnType;
-	if (parse_whitespace(t) && parse_type(t, returnType)) {
+	if (parse_whitespace(t) && parse_type(t, returnType, false)) {
 		t.commit();
 		fnType->setReturnType(returnType);
 	} else {
@@ -294,7 +294,7 @@ bool parse_unresolved_type(Tokenizer &t, Ptr<Type> &type) {
 	return true;
 }
 
-bool parse_type(Tokenizer &t, Ptr<Type> &type) {
+bool parse_type(Tokenizer &t, Ptr<Type> &type, bool expected) {
 	// array?
 	if ((*t)->type == ABT_OBRACKET) {
 		return parse_array(t, type);
@@ -321,7 +321,7 @@ bool parse_type(Tokenizer &t, Ptr<Type> &type) {
 	}
 
 	// otherwise, this is an invalid token
-	return unexpected(t);
+	return expected ? unexpected(t) : false;
 }
 
 bool parse_typedef(Tokenizer &t, Ptr<Module> module) {
@@ -356,16 +356,12 @@ bool parse_module(Tokenizer &t, Ptr<Module> module) {
 
 		switch ((*t)->type) {
 		case ABT_PUB:
-			if (!parse_pub(t)) {
-				return false;
-			}
+			if (!parse_pub(t)) return false;
 			continue;
 		case ABT_EOF:
 			break;
 		case ABT_TYPEDEF:
-			if (!parse_typedef(t, module)) {
-				return false;
-			}
+			if (!parse_typedef(t, module)) return false;
 			break;
 		default:
 			return unexpected(t);
