@@ -96,6 +96,10 @@ public:
 		return u;
 	}
 
+	operator bool() const throw() {
+		return bool(this->ptr);
+	}
+
 private:
 	void detach() {
 		if (this->instances) {

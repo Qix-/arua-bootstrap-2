@@ -14,7 +14,7 @@ public:
 
 	TypeType getTypeType() const throw();
 
-	virtual bool operator==(const Type &other) const throw() = 0;
+	virtual bool operator ==(const Type &other) const throw() = 0;
 	virtual bool canBeAssignedTo(const Type &other) const throw() = 0;
 
 private:

@@ -7,19 +7,14 @@ SRC := \
 	cli.cc \
 	parser.cc \
 	lexer.cc.re \
-	ast/module.cc \
-	ast/type.cc \
-	ast/type-scalar.cc \
-	ast/type-array.cc \
-	ast/type-function.cc \
-	ast/symbol-context.cc \
-	ast/identifier.cc \
-	ast/target.cc \
-	ast/universe.cc \
-	ast/node.cc \
-	ast/problem.cc \
 	lex-util.cc \
 	parse-problem.cc \
+	value.cc \
+	type.cc \
+	type-array.cc \
+	type-function.cc \
+	type-reference.cc \
+	type-scalar.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

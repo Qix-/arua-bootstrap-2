@@ -10,6 +10,7 @@ enum class TypeType {
 	REFERENCE,
 	STRUCT,
 	TRAIT,
+	FUNCTION,
 };
 
 }
