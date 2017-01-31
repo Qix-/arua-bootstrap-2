@@ -18,7 +18,7 @@ public:
 	Context(std::shared_ptr<Context> parent = nullptr);
 	virtual ~Context() = default;
 
-	Ptr<Value> resolve(std::string name) throw();
+	Ptr<Value> resolve(std::string name, std::shared_ptr<Context> requestingContext = nullptr) throw();
 
 	void addType(Ptr<Type> type, bool pub = false) throw();
 

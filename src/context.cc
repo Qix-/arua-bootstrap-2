@@ -9,10 +9,31 @@ Context::Context(shared_ptr<Context> parent)
 		: parent(parent) {
 }
 
-Ptr<Value> Context::resolve(string name) throw() {
-	auto itrType = this->types.find(name);
-	if (itrType != this->types.end()) {
-		return itrType->second.as<Value>();
+Ptr<Value> Context::resolve(string name, shared_ptr<Context> requestingContext) throw() {
+	// determine if the request is 'privileged' - if it's privileged, it means
+	// that it is able to access privatized members in this context and above contexts.
+	bool privileged = false;
+	for (auto cur = requestingContext; cur != nullptr; cur = cur->parent) {
+		if (cur.get() == this) {
+			privileged = true;
+			break;
+		}
+	}
+
+	if (!privileged && !this->publicNames.count(name)) {
+		// it doesn't even matter if the thing really exists as a private member
+		// or not; if it's not privileged and not publicized, then return nullptr.
+		//
+		// in the future, this will be able to return some sort of reason as to
+		// why it was denied, in order to get better error messages.
+		return nullptr;
+	}
+
+	{
+		auto itr = this->types.find(name);
+		if (itr != this->types.end()) {
+			return itr->second.as<Value>();
+		}
 	}
 
 	return parent ? parent->resolve(name) : nullptr;
