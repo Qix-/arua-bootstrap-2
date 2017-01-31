@@ -47,6 +47,24 @@ public:
 		}
 	}
 
+	void replace(Ptr<T> other) {
+		// this is really a merge...
+
+		// gets destructed after this method
+		auto insts = this->instances;
+
+		for (Ptr<T> * &inst : *insts) {
+			// set the value
+			inst->ptr = other.ptr;
+
+			// replace the instance list to merge
+			inst->instances = other.instances;
+
+			// attach to new instance list
+			inst->attach();
+		}
+	}
+
 	T * get() {
 		return this->ptr.get();
 	}
