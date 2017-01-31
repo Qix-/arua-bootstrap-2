@@ -16,6 +16,7 @@ SRC := \
 	type-reference.cc \
 	type-scalar.cc \
 	context.cc \
+	type-derived.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
