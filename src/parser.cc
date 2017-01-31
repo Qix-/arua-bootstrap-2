@@ -1,14 +1,17 @@
-#include <unordered_set>
+#include <iostream>
+#include <list>
+#include <memory>
+#include <string>
+#include <tuple>
 
-#include "ast/module.h"
-#include "ast/target.h"
-#include "ast/type.h"
-#include "ast/type-array.h"
-#include "ast/type-scalar.h"
 #include "lex-util.h"
 #include "lexer.h"
 #include "parse-problem.h"
 #include "parser.h"
+#include "ptr.h"
+#include "token.h"
+#include "type.h"
+#include "value.h"
 
 using namespace arua;
 using namespace std;
@@ -16,15 +19,14 @@ using namespace std;
 typedef list<shared_ptr<const Token>>::const_iterator TokenListIterator;
 
 struct Tokenizer {
-	shared_ptr<Universe> universe;
 	TokenListIterator &itr;
-	unordered_set<Universe::ID> deferred;
+	list<tuple<Ptr<Type>, shared_ptr<vector<Token>>>> unresolvedTypes;
+	list<tuple<Ptr<Value>, shared_ptr<vector<Token>>>> unresolvedValues;
 
 	bool pub;
 
-	Tokenizer(shared_ptr<Universe> universe, TokenListIterator &itr)
-			: universe(universe)
-			, itr(itr)
+	Tokenizer(TokenListIterator &itr)
+			: itr(itr)
 			, pub(false) {
 	}
 
@@ -54,9 +56,7 @@ struct Tokenizer {
 };
 
 bool unexpected(Tokenizer &t) {
-	auto id = t.universe->addNode();
-	t.universe->addToken(id, *t);
-	t.universe->addError(id, "unexpected token");
+	cerr << "aruab: error: " << (*t)->source << ":" << (*t)->line << ":" << (*t)->columnStart << ": unexpected token: " << arua::formatToken(*t, true) << endl;
 	return false;
 }
 
@@ -92,22 +92,21 @@ inline bool expect(Tokenizer &t, TokenType type) {
 	}
 }
 
-bool parse_identifier(Tokenizer &t, shared_ptr<Identifier> &id) {
+bool parse_identifier(Tokenizer &t, string &id) {
 	if ((*t)->type != ABT_ID) return unexpected(t);
 
-	id = (new Identifier(t.universe, (*t)->value))->ptr<Identifier>();
-	t.universe->addToken(id->getID(), *t);
+	id = (*t)->value;
 	++t;
 	return true;
 }
 
-std::shared_ptr<Module> arua::parseFile(std::shared_ptr<Universe> universe, filesystem::path filename, unsigned int tabWidth) throw() {
+std::shared_ptr<Module> arua::parseFile(filesystem::path filename, unsigned int tabWidth) throw() {
 	auto tokens = arua::lexFile(filename, tabWidth);
 
-	shared_ptr<Module> module(new Module(universe, filename.str()));
+	shared_ptr<Module> module(new Module(filename.str()));
 
 	TokenListIterator vitr = tokens->cbegin();
-	Tokenizer t(universe, vitr);
+	Tokenizer t(vitr);
 
 	return nullptr;
 }

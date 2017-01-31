@@ -6,11 +6,10 @@
 
 #include "filesystem/path.h"
 
-#include "ast/module.h"
-#include "ast/universe.h"
+#include "module.h"
 
 namespace arua {
-	std::shared_ptr<Module> parseFile(std::shared_ptr<Universe> universe, filesystem::path filename, unsigned int tabWidth = 8) throw();
+	std::shared_ptr<Module> parseFile(filesystem::path filename, unsigned int tabWidth = 8) throw();
 }
 
 #endif
