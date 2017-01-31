@@ -234,7 +234,7 @@ bool parse_reference(Tokenizer &t, Ptr<Type> &type) {
 }
 
 bool parse_scalar(Tokenizer &t, Ptr<Type> &type) {
-	if (!expect(t, ABT_SCALAR)) return unexpected(t);
+	if ((*t)->type != ABT_SCALAR) return unexpected(t);
 
 	ScalarType scalarFormat;
 	char clazz = (*t)->value[0];
