@@ -1,1 +1,3 @@
 pub type i32 as foo
+pub type foo as bar
+pub type qux as flibber

@@ -95,8 +95,12 @@ struct Tokenizer {
 	}
 };
 
+ostream & problem(shared_ptr<const Token> t, string severity = "error") {
+	return cerr << "aruab: " << severity << ": " << t->source << ":" << t->line << ":" << t->columnStart << ": ";
+}
+
 ostream & problem(Tokenizer &t, string severity = "error") {
-	return cerr << "aruab: " << severity << ": " << (*t)->source << ":" << (*t)->line << ":" << (*t)->columnStart << ": ";
+	return problem(*t, severity);
 }
 
 bool unexpected(Tokenizer &t) {
@@ -320,7 +324,7 @@ bool parse_type(Tokenizer &t, Ptr<Type> &type) {
 	return unexpected(t);
 }
 
-bool parse_typedef(Tokenizer &t, shared_ptr<Module> module) {
+bool parse_typedef(Tokenizer &t, Ptr<Module> module) {
 	if (!expect(t, ABT_TYPEDEF)) return unexpected(t);
 	if (!parse_whitespace(t)) return unexpected(t);
 
@@ -344,7 +348,7 @@ bool parse_typedef(Tokenizer &t, shared_ptr<Module> module) {
 	return true;
 }
 
-bool parse_module(Tokenizer &t, shared_ptr<Module> module) {
+bool parse_module(Tokenizer &t, Ptr<Module> module) {
 	while ((*t)->type != ABT_EOF) {
 		if (!t.pub) {
 			burn(t);
@@ -373,13 +377,76 @@ bool parse_module(Tokenizer &t, shared_ptr<Module> module) {
 	return true;
 }
 
-shared_ptr<Module> arua::parseFile(filesystem::path filename, unsigned int tabWidth) throw() {
+bool resolve(Tokenizer &t, Ptr<Context> ctx) {
+	// TODO values
+	size_t typeSize;
+
+	bool success = true;
+
+	do {
+		typeSize = t.unresolvedTypes.size();
+
+		for (auto itr = t.unresolvedTypes.begin(); itr != t.unresolvedTypes.end();) {
+			Ptr<Value> prevValue = ctx.as<Value>();
+			Ptr<Value> curValue = prevValue;
+			shared_ptr<const Token> lastToken;
+
+			// attempt to resolve the identifier
+			for (auto &tkn : *itr->b) {
+				if (curValue->getValueType() != ValueType::CONTEXT) {
+					problem(lastToken) << "trying to resolve against a symbol that is not a context: " << arua::formatToken(lastToken, true) << endl;
+					success = false;
+					goto remove;
+				}
+
+				Ptr<Value> tmpValue = curValue;
+				curValue = curValue.as<Context>()->resolve(tkn->value, prevValue.as<Context>());
+				prevValue = tmpValue;
+				lastToken = tkn;
+
+				if (!curValue) {
+					goto noResolve;
+				}
+			}
+
+			if (curValue->getValueType() != ValueType::TYPE) {
+				problem(lastToken) << "resolved symbol is not a type: " << arua::formatToken(lastToken, true) << endl;
+				success = false;
+			} else {
+				itr->a.replace(curValue.as<Type>());
+			}
+
+remove:
+			itr = t.unresolvedTypes.erase(itr);
+			continue;
+
+noResolve:
+			++itr;
+		}
+	} while (t.unresolvedTypes.size() != typeSize);
+
+	if (typeSize > 0) {
+		for (auto &pair : t.unresolvedTypes) {
+			auto &stream = problem(*pair.b->begin()) << "could not resolve symbol: ";
+			arua::renderTokens(*pair.b, stream);
+			stream << endl;
+		}
+
+		return false;
+	}
+
+	return success;
+}
+
+Ptr<Module> arua::parseFile(filesystem::path filename, unsigned int tabWidth) throw() {
 	auto tokens = arua::lexFile(filename, tabWidth);
 
-	shared_ptr<Module> module(new Module(filename.str()));
+	auto module = Ptr<Module>::make(filename.str());
 
 	TokenListIterator vitr = tokens->cbegin();
 	Tokenizer t(vitr);
 
-	return parse_module(t, module) ? module : nullptr;
+	if (!parse_module(t, module)) return nullptr;
+
+	return resolve(t, module.as<Context>()) ? module : nullptr;
 }

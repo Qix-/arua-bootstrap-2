@@ -21,8 +21,8 @@ int protected_main(int argc, const char *argv[]) {
 
 	// TODO DEBUG
 	// this will all get revamed like it was.
-	shared_ptr<Module> module = arua::parseFile(cfg.mainSymbol, cfg.tabWidth);
-	if (module == nullptr) {
+	Ptr<Module> module = arua::parseFile(cfg.mainSymbol, cfg.tabWidth);
+	if (!module) {
 		return 1;
 	}
 
