@@ -9,6 +9,7 @@ namespace arua {
 
 template <typename T>
 class Ptr {
+	template <typename U> friend class Ptr;
 public:
 	Ptr()
 			: instances(new std::list<Ptr<T> *>()) {
@@ -84,6 +85,15 @@ public:
 	template <typename... Args>
 	static Ptr<T> make(Args... args) {
 		return Ptr<T>(new T(args...));
+	}
+
+	template <typename U>
+	Ptr<U> as() {
+		Ptr<U> u;
+		u.ptr = std::static_pointer_cast<U>(this->ptr);
+		u.instances = std::static_pointer_cast<std::list<Ptr<U> *>>(this->instances);
+		u.attach();
+		return u;
 	}
 
 private:
