@@ -15,6 +15,7 @@ SRC := \
 	type-function.cc \
 	type-reference.cc \
 	type-scalar.cc \
+	context.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)

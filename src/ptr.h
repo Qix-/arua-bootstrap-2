@@ -62,6 +62,14 @@ public:
 		return *this->ptr;
 	}
 
+	T * operator ->() {
+		return this->ptr.operator ->();
+	}
+
+	const T * operator ->() const {
+		return this->ptr.operator ->();
+	}
+
 	bool operator==(const Ptr<T> &other) const {
 		return this->ptr == other.ptr;
 	}
@@ -91,7 +99,7 @@ public:
 	Ptr<U> as() {
 		Ptr<U> u;
 		u.ptr = std::static_pointer_cast<U>(this->ptr);
-		u.instances = std::static_pointer_cast<std::list<Ptr<U> *>>(this->instances);
+		u.instances = ((Ptr<U> *)this)->instances;
 		u.attach();
 		return u;
 	}

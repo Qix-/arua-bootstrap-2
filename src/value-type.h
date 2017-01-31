@@ -5,6 +5,7 @@
 namespace arua {
 
 enum class ValueType {
+	INVALID,
 	TYPE,
 };
 
