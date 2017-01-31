@@ -8,8 +8,6 @@ enum class TypeType {
 	SCALAR,
 	ARRAY,
 	REFERENCE,
-	STRUCT,
-	TRAIT,
 	FUNCTION,
 };
 
