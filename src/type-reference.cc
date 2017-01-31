@@ -20,7 +20,6 @@ bool TypeReference::operator ==(const Type &other) const throw() {
 		&& (this->baseType == ((TypeReference *)&other)->baseType);
 }
 
-
 bool TypeReference::canBeAssignedTo(const Type &other) const throw() {
 	return *this == other;
 }
