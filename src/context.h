@@ -9,11 +9,11 @@
 
 #include "ptr.h"
 #include "type.h"
-#include "value-type.h"
+#include "value.h"
 
 namespace arua {
 
-class Context {
+class Context : public Value {
 public:
 	Context(std::shared_ptr<Context> parent = nullptr);
 	virtual ~Context() = default;

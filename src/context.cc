@@ -6,7 +6,8 @@ using namespace arua;
 using namespace std;
 
 Context::Context(shared_ptr<Context> parent)
-		: parent(parent) {
+		: Value(ValueType::CONTEXT)
+		, parent(parent) {
 }
 
 Ptr<Value> Context::resolve(string name, shared_ptr<Context> requestingContext) throw() {
