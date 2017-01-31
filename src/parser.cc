@@ -273,7 +273,7 @@ bool parse_scalar(Tokenizer &t, Ptr<Type> &type) {
 }
 
 bool parse_unresolved_type(Tokenizer &t, Ptr<Type> &type) {
-	if ((*t)->type == ABT_ID) return unexpected(t);
+	if ((*t)->type != ABT_ID) return unexpected(t);
 
 	shared_ptr<TokenList> idents(new TokenList());
 
