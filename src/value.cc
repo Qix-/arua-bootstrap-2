@@ -3,12 +3,12 @@
 using namespace arua;
 using namespace std;
 
-Value::Value(ValueType type)
-		: type(type) {
+Value::Value(ValueType valueType)
+		: valueType(valueType) {
 }
 
 ValueType Value::getValueType() const throw() {
-	return this->type;
+	return this->valueType;
 }
 
 void Value::setName(string name) throw() {
@@ -17,4 +17,12 @@ void Value::setName(string name) throw() {
 
 string Value::getName() const throw() {
 	return this->name;
+}
+
+void Value::setType(Ptr<Type> type) throw() {
+	this->type = type;
+}
+
+Ptr<Type> Value::getType() const throw() {
+	return this->type;
 }
