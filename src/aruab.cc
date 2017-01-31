@@ -2,7 +2,6 @@
 #include <memory>
 #include <stdexcept>
 
-#include "ast/universe.h"
 #include "cli.h"
 #include "parser.h"
 
@@ -20,7 +19,9 @@ int protected_main(int argc, const char *argv[]) {
 		cfg.zones.insert(filesystem::path::getcwd());
 	}
 
-	std::shared_ptr<Universe> universe(new Universe());
+	// TODO DEBUG
+	// this will all get revamed like it was.
+	arua::parseFile(cfg.mainSymbol, cfg.tabWidth);
 
 //	shared_ptr<SymbolContextGlobalZone> globalZone(new SymbolContextGlobalZone(cfg.zones));
 //
