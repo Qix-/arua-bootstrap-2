@@ -17,7 +17,8 @@ public:
 	}
 
 	Ptr(const Ptr<T> &other)
-			: instances(other.instances) {
+			: instances(other.instances)
+			, ptr(other.ptr) {
 		this->attach();
 	}
 
