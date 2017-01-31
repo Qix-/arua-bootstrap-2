@@ -268,6 +268,7 @@ bool parse_scalar(Tokenizer &t, Ptr<Type> &type) {
 	scalarType->setWidth(width);
 
 	type = scalarType.as<Type>();
+	++t;
 	return true;
 }
 
