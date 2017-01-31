@@ -43,7 +43,7 @@ function make(name) {
 		'using namespace arua;',
 		'using namespace std;',
 		'',
-		className + '::' + className + ' {',
+		className + '::' + className + '() {',
 		'}',
 		''
 	];
