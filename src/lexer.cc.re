@@ -239,6 +239,7 @@ void lex_input(Input &in) {
 		"/" { in.push(ABT_DIVIDE); continue; }
 		"*" { in.push(ABT_MULTIPLY); continue; }
 		"=" { in.push(ABT_EQUALS); continue; }
+		"&" { in.push(ABT_AMP); continue; }
 
 		id = [a-zA-Z_][a-zA-Z_0-9]*;
 		id { in.pushv(ABT_ID); continue; }

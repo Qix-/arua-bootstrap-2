@@ -49,6 +49,7 @@ enum TokenType {
 	ABT_TRAIT,
 	ABT_TYPEDEF,
 	ABT_ALIAS,
+	ABT_AMP,
 };
 
 struct Token {
