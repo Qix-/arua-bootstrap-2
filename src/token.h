@@ -50,6 +50,7 @@ enum TokenType {
 	ABT_TYPEDEF,
 	ABT_ALIAS,
 	ABT_AMP,
+	ABT_SCALAR,
 };
 
 struct Token {
