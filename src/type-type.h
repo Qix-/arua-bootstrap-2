@@ -9,6 +9,7 @@ enum class TypeType {
 	ARRAY,
 	REFERENCE,
 	FUNCTION,
+	DERIVED,
 };
 
 }
