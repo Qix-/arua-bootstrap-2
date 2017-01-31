@@ -241,7 +241,7 @@ void lex_input(Input &in) {
 		"=" { in.push(ABT_EQUALS); continue; }
 		"&" { in.push(ABT_AMP); continue; }
 
-		scalar = [uif][1-9][0-9]*;
+		scalar = [uif][0-9]*;
 		scalar { in.pushv(ABT_SCALAR); continue; }
 
 		id = [a-zA-Z_][a-zA-Z_0-9]*;
