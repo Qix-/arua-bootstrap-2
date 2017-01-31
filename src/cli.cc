@@ -85,7 +85,7 @@ bool arua::build_config(int argc, const char *argv[], arua::config &cfg) {
 
 	if (cfg.help) {
 		xoptAutohelpOptions opts;
-		opts.usage = "usage: aruab [options] [file...]";
+		opts.usage = "usage: aruab [options] zone.to.main_fn";
 		opts.prefix = "Arua bootstrap compiler suite";
 		opts.suffix = "https://github.com/arua-lang/bootstrap";
 		opts.spacer = 15;
