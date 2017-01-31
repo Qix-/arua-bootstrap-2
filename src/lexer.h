@@ -7,7 +7,7 @@
 
 #include "filesystem/path.h"
 
-#include "ast/token.h"
+#include "token.h"
 
 namespace arua {
 

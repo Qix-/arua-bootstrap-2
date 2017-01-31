@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-#include "ast/token.h"
+#include "token.h"
 
 namespace arua {
 	std::string formatToken(const std::shared_ptr<const Token> tkn, bool human = false);

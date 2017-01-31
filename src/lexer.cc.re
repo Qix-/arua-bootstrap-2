@@ -4,7 +4,7 @@
 #include <memory>
 #include <list>
 
-#include "ast/token.h"
+#include "token.h"
 #include "lexer.h"
 
 using namespace arua;
