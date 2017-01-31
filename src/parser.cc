@@ -329,6 +329,7 @@ bool parse_typedef(Tokenizer &t, shared_ptr<Module> module) {
 
 	if (!parse_whitespace(t)) return unexpected(t);
 	if (!expect(t, ABT_AS)) return unexpected(t);
+	if (!parse_whitespace(t)) return unexpected(t);
 
 	string name;
 	if (!parse_identifier(t, name)) return false;
