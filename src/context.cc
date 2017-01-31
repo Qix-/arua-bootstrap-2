@@ -5,16 +5,16 @@
 using namespace arua;
 using namespace std;
 
-Context::Context(shared_ptr<Context> parent)
+Context::Context(Ptr<Context> parent)
 		: Value(ValueType::CONTEXT)
 		, parent(parent) {
 }
 
-Ptr<Value> Context::resolve(string name, shared_ptr<Context> requestingContext) throw() {
+Ptr<Value> Context::resolve(string name, Ptr<Context> requestingContext) throw() {
 	// determine if the request is 'privileged' - if it's privileged, it means
 	// that it is able to access privatized members in this context and above contexts.
 	bool privileged = false;
-	for (auto cur = requestingContext; cur != nullptr; cur = cur->parent) {
+	for (auto cur = requestingContext; cur; cur = cur->parent) {
 		if (cur.get() == this) {
 			privileged = true;
 			break;
