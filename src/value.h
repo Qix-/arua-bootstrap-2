@@ -10,6 +10,7 @@
 namespace arua {
 
 class Type;
+class Context;
 
 class Value {
 public:
@@ -24,10 +25,13 @@ public:
 	void setType(Ptr<Type> type) throw();
 	Ptr<Type> getType() const throw();
 
+	void setContext(Ptr<Context> ctx) throw();
+	Ptr<Context> getContext() throw();
 private:
 	ValueType valueType;
 	std::string name;
 	Ptr<Type> type;
+	Ptr<Context> context;
 };
 
 }

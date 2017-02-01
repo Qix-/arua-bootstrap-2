@@ -26,3 +26,11 @@ void Value::setType(Ptr<Type> type) throw() {
 Ptr<Type> Value::getType() const throw() {
 	return this->type;
 }
+
+void Value::setContext(Ptr<Context> ctx) throw() {
+	this->context = ctx;
+}
+
+Ptr<Context> Value::getContext() throw() {
+	return this->context;
+}
