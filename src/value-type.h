@@ -5,7 +5,6 @@
 namespace arua {
 
 enum class ValueType {
-	INVALID,
 	CONTEXT,
 	TYPE,
 	IMMEDIATE,
