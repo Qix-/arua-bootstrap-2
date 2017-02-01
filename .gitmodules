@@ -4,10 +4,11 @@
 [submodule "ext/re2c"]
 	path = ext/re2c
 	url = git@github.com:skvadrik/re2c.git
-	ignore = all
+	ignore = dirty
 [submodule "ext/filesystem"]
 	path = ext/filesystem
 	url = https://github.com/bin-build/filesystem.git
 [submodule "ext/bsdnt"]
 	path = ext/bsdnt
 	url = https://github.com/wbhart/bsdnt.git
+	ignore = dirty
