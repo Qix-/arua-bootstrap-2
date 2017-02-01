@@ -8,7 +8,7 @@
 #include "ptr.h"
 
 namespace arua {
-	Ptr<Module> parseFile(filesystem::path filename, unsigned int tabWidth = 8) throw();
+	Ptr<Module> parseFile(filesystem::path filename, unsigned int tabWidth = 8);
 }
 
 #endif

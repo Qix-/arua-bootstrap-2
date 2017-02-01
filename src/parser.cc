@@ -434,7 +434,7 @@ noResolve:
 	return success;
 }
 
-Ptr<Module> arua::parseFile(filesystem::path filename, unsigned int tabWidth) throw() {
+Ptr<Module> arua::parseFile(filesystem::path filename, unsigned int tabWidth) {
 	auto tokens = arua::lexFile(filename, tabWidth);
 
 	auto module = Ptr<Module>::make(filename.str());

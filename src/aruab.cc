@@ -48,7 +48,7 @@ int protected_main(int argc, const char *argv[]) {
 int main(int argc, const char *argv[]) {
 	try {
 		return protected_main(argc, argv);
-	} catch (const exception &e) {
+	} catch (exception &e) {
 		cerr << "aruab: fatal error: " << e.what() << endl;
 	}
 
