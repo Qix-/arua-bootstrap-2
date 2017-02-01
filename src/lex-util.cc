@@ -19,6 +19,7 @@ string arua::formatToken(const shared_ptr<const Token> tkn, bool human) {
 	case ABT_AMP: return "\x1b[2m&\x1b[m";
 	case ABT_RET: return "\x1b[36;1mret\x1b[m";
 	case ABT_NUM:
+	case ABT_NUM_FLOAT:
 	case ABT_NUM_RADIX:
 	case ABT_NUM_EX: return "\x1b[31m" + tkn->value + "\x1b[m";
 	case ABT_SCALAR: return "\x1b[38;2;199m" + tkn->value + "\x1b[m";

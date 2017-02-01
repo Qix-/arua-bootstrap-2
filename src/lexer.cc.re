@@ -228,7 +228,8 @@ void lex_input(Input &in) {
 
 		["] { lex_string(in); continue; }
 
-		([0-9]+ "." [0-9]+) | ("." [0-9]+) | ([0-9]+ "."?) { in.pushv(ABT_NUM); continue; }
+		([0-9]+ "." [0-9]+) | ("." [0-9]+) | ([0-9]+ ".") { in.pushv(ABT_NUM_FLOAT); continue; }
+		[0-9]+ { in.pushv(ABT_NUM); continue; }
 
 		"fn" { in.push(ABT_FN); continue; }
 		"ret" { in.push(ABT_RET); continue; }

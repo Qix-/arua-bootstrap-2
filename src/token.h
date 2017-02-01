@@ -25,6 +25,7 @@ enum TokenType {
 	ABT_FN,
 	ABT_RET,
 	ABT_NUM,
+	ABT_NUM_FLOAT,
 	ABT_NUM_EX,
 	ABT_NUM_RADIX,
 	ABT_DOT,
