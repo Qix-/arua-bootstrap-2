@@ -10,11 +10,22 @@ Context::Context(Ptr<Context> parent)
 		, parent(parent) {
 }
 
-Ptr<Value> Context::resolve(string name, Ptr<Context> requestingContext) throw() {
+Ptr<Value> Context::resolve(string name, Ptr<Value> requester) throw() {
 	// determine if the request is 'privileged' - if it's privileged, it means
 	// that it is able to access privatized members in this context and above contexts.
 	bool privileged = false;
-	for (auto cur = requestingContext; cur; cur = cur->parent) {
+	Ptr<Context> cur;
+	if (requester) {
+		cur = requester->getValueType() == ValueType::CONTEXT
+			? requester.as<Context>()
+			: requester->getContext();
+
+		if (!cur) {
+			cerr << "aruab: warning: resolve was given a value with no context. Is the parser feeling okay?" << endl;
+		}
+	}
+
+	for (; cur; cur = cur->parent) {
 		if (cur.get() == this) {
 			privileged = true;
 			break;
