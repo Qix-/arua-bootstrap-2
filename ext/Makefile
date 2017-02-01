@@ -3,7 +3,7 @@ all: xopt re2c
 
 clean:
 	+$(MAKE) -C xopt clean
-	+$(MAKE) -C re2c clean
+	+$(MAKE) -C re2c/re2c clean
 
 xopt:
 	+$(MAKE) -C xopt
