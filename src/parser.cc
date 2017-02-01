@@ -6,7 +6,6 @@
 
 #include "lex-util.h"
 #include "lexer.h"
-#include "parse-problem.h"
 #include "parser.h"
 #include "ptr.h"
 #include "token.h"

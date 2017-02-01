@@ -8,7 +8,6 @@ SRC := \
 	parser.cc \
 	lexer.cc.re \
 	lex-util.cc \
-	parse-problem.cc \
 	value.cc \
 	type.cc \
 	type-array.cc \
