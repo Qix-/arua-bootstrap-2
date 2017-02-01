@@ -186,6 +186,22 @@ void lex_string(Input &in) {
 	in.push(ABT_STR_END);
 }
 
+void lex_number_ex(Input &in) {
+	in.pushv(ABT_NUM_RADIX);
+		in.tok = in.cur;
+/*!re2c
+	re2c:define:YYCURSOR = in.cur;
+	re2c:define:YYMARKER = in.mar;
+	re2c:define:YYLIMIT = in.lim;
+	re2c:yyfill:enable = 1;
+	re2c:define:YYFILL = "if (!in.fill(@@)) return;";
+	re2c:define:YYFILL:naked = 1;
+
+	* { return; } // TODO error message
+	[a-zA-Z0-9]+ { in.pushv(ABT_NUM_EX); return; }
+*/
+}
+
 void lex_input(Input &in) {
 	for (;;) {
 		in.tok = in.cur;
@@ -207,8 +223,8 @@ void lex_input(Input &in) {
 		"\t" { in.push(ABT_TAB); continue; }
 		"\r"?"\n" { in.push(ABT_NL); continue; }
 
-		extended_form = ("0" | [1-9][0-9]*) "x" [a-zA-Z0-9]+;
-		extended_form { in.pushv(ABT_NUM_EXTENDED); continue; }
+		extended_form = ("0" | [1-9][0-9]*) "x";
+		extended_form { lex_number_ex(in); continue; }
 
 		["] { lex_string(in); continue; }
 
