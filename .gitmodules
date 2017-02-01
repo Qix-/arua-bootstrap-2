@@ -8,6 +8,3 @@
 [submodule "ext/filesystem"]
 	path = ext/filesystem
 	url = https://github.com/bin-build/filesystem.git
-[submodule "ext/bignumber"]
-	path = ext/bignumber
-	url = https://github.com/Limeoats/BigNumber.git
