@@ -18,6 +18,7 @@ SRC := \
 	type-derived.cc \
 	module.cc \
 	constant.cc \
+	immediate.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
