@@ -1,4 +1,3 @@
-.SECONDARY:
 .PHONY: all clean
 
 RE2C := ../ext/re2c/re2c/re2c
@@ -23,18 +22,29 @@ SRC := \
 
 CCSRC := $(SRC:.cc.re=.cc)
 OBJS := $(CCSRC:.cc=.o)
+DEPS := $(CCSRC:.cc=.d)
+
+CPPFLAGS := -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem
 
 all: aruab
 
 clean:
+	rm -rf aruab
 	rm -rf lexer.cc
-	rm -rf aruab $(OBJS)
+	rm -rf $(DEPS)
+	rm -rf $(OBJS)
 
 aruab : $(OBJS)
 	$(CXX) -o $@ $^ -g3 -O0 -lxopt -L../ext/xopt
 
 %.o : %.cc
-	$(CXX) -c -o $@ $< -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem
+	$(CXX) -c -o $@ $< $(CPPFLAGS)
 
 %.cc : %.cc.re
 	$(RE2C) -s8 -W -Werror -o $@ $<
+
+%.d : %.cc
+	set -e; rm -f $@; \
+	$(CXX) -M $(CPPFLAGS) $< | sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@;
+
+-include $(DEPS)
