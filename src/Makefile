@@ -18,13 +18,14 @@ SRC := \
 	module.cc \
 	constant.cc \
 	immediate.cc \
+	immediate-number.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
 OBJS := $(CCSRC:.cc=.o)
 DEPS := $(CCSRC:.cc=.d)
 
-CPPFLAGS := -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem
+CPPFLAGS := -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem -I../ext/bsdnt
 
 all: aruab
 
@@ -35,7 +36,7 @@ clean:
 	rm -rf $(OBJS)
 
 aruab : $(OBJS)
-	$(CXX) -o $@ $^ -g3 -O0 -lxopt -L../ext/xopt
+	$(CXX) -o $@ $^ -g3 -O0 -lxopt -lbsdnt -L../ext/xopt -L../ext/bsdnt
 
 %.o : %.cc
 	$(CXX) -c -o $@ $< $(CPPFLAGS)
