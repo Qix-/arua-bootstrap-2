@@ -4,7 +4,8 @@ using namespace arua;
 using namespace std;
 
 Value::Value(ValueType valueType)
-		: valueType(valueType) {
+		: valueType(valueType)
+		, mut(false) {
 }
 
 ValueType Value::getValueType() const throw() {
@@ -33,4 +34,12 @@ void Value::setContext(Ptr<Context> ctx) throw() {
 
 Ptr<Context> Value::getContext() throw() {
 	return this->context;
+}
+
+void Value::setMutable(bool mut) throw() {
+	this->mut = mut;
+}
+
+bool Value::isMutable() const throw() {
+	return this->mut;
 }
