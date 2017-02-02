@@ -19,6 +19,7 @@ SRC := \
 	constant.cc \
 	immediate.cc \
 	immediate-number.cc \
+	immediate-string.cc \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
