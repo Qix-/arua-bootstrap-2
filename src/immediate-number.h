@@ -4,8 +4,6 @@
 
 #include <string>
 
-#include "zz.h"
-
 #include "immediate.h"
 
 namespace arua {
@@ -13,14 +11,14 @@ namespace arua {
 class ImmediateNumber : public Immediate {
 public:
 	ImmediateNumber(std::string number, unsigned int radix = 10);
-	virtual ~ImmediateNumber();
+	virtual ~ImmediateNumber() = default;
 
 	bool parseNumber(std::string number, unsigned int radix = 10) throw();
 
 	std::string getNumber() const throw();
 
 private:
-	zz_t number;
+	std::string number;
 };
 
 }

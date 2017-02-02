@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "zz.h"
+
 #include "immediate-number.h"
 
 using namespace arua;
@@ -26,12 +28,7 @@ static unsigned int digitValue(char digit) {
 
 ImmediateNumber::ImmediateNumber(string number, unsigned int radix)
 		: Immediate(ImmediateType::NUMBER) {
-	zz_init(this->number);
 	this->parseNumber(number, radix);
-}
-
-ImmediateNumber::~ImmediateNumber() {
-	zz_clear(this->number);
 }
 
 bool ImmediateNumber::parseNumber(string number, unsigned int radix) throw() {
@@ -48,7 +45,7 @@ bool ImmediateNumber::parseNumber(string number, unsigned int radix) throw() {
 			}
 		}
 
-		zz_set_str(this->number, number.c_str());
+		this->number = number;
 		return true;
 	}
 
@@ -56,6 +53,7 @@ bool ImmediateNumber::parseNumber(string number, unsigned int radix) throw() {
 	zz_t num, rnum;
 	zz_init(num);
 	zz_init(rnum);
+	char * numStr = 0;
 
 	for (char c : number) {
 		unsigned int digit = digitValue(c);
@@ -69,7 +67,9 @@ bool ImmediateNumber::parseNumber(string number, unsigned int radix) throw() {
 		zz_addi(num, rnum, digit);
 	}
 
-	zz_swap(this->number, num);
+	numStr = zz_get_str(num);
+	this->number = numStr;
+	free(numStr);
 
 badCharacter:
 	zz_clear(num);
@@ -78,8 +78,5 @@ badCharacter:
 }
 
 string ImmediateNumber::getNumber() const throw() {
-	char *cstr = zz_get_str(this->number);
-	string result(cstr);
-	free(cstr);
-	return result;
+	return this->number;
 }
