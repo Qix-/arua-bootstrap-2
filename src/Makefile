@@ -26,7 +26,7 @@ CCSRC := $(SRC:.cc.re=.cc)
 OBJS := $(CCSRC:.cc=.o)
 DEPS := $(CCSRC:.cc=.d)
 
-CPPFLAGS := -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem -I../ext/bsdnt
+CPPFLAGS += -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem -I../ext/bsdnt
 
 all: aruab
 
