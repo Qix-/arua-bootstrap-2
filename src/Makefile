@@ -23,8 +23,8 @@ SRC := \
 	aruab.cc
 
 CCSRC := $(SRC:.cc.re=.cc)
-OBJS := $(CCSRC:.cc=.o)
-DEPS := $(CCSRC:.cc=.d)
+OBJS := $(addsuffix .o,$(basename $(CCSRC)))
+DEPS := $(addsuffix .d,$(basename $(CCSRC)))
 
 CPPFLAGS += -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I../ext/filesystem -I../ext/bsdnt
 
