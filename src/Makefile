@@ -31,10 +31,10 @@ CPPFLAGS += -g3 -O0 -Wall -Wextra -Werror -std=c++11 -pedantic -I../ext/xopt -I.
 all: aruab
 
 clean:
-	rm -rf aruab
-	rm -rf lexer.cc
-	rm -rf $(DEPS)
-	rm -rf $(OBJS)
+	-rm -rf aruab
+	-rm -rf lexer.cc
+	-rm -rf $(DEPS)
+	-rm -rf $(OBJS)
 
 aruab : $(OBJS)
 	$(CXX) -o $@ $^ -g3 -O0 -lxopt -lbsdnt -L../ext/xopt -L../ext/bsdnt
@@ -46,7 +46,7 @@ aruab : $(OBJS)
 	$(RE2C) -s8 -W -Werror -o $@ $<
 
 %.d : %.cc
-	set -e; rm -f $@; \
+	@set -e; rm -f $@; \
 	$(CXX) -M $(CPPFLAGS) $< | sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@;
 
 -include $(DEPS)
