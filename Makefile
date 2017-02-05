@@ -5,5 +5,5 @@ all:
 	+$(MAKE) -C src
 
 clean:
-	+$(MAKE) -C ext/xopt clean
+	+$(MAKE) -C ext clean
 	+$(MAKE) -C src clean
