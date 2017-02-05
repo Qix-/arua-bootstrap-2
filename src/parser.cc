@@ -234,7 +234,7 @@ bool parse_fn(Tokenizer &t, Ptr<Type> &type) {
 	// gotta be sneaky and check for whitespace + valid type as a return type.
 	t.push();
 	Ptr<Type> returnType;
-	if (parse_whitespace(t) && parse_type(t, returnType, false)) {
+	if (parse_whitespace(t) && parse_type(t, returnType, TYPE | UNRESOLVED)) {
 		t.commit();
 		fnType->setReturnType(returnType);
 	} else {
